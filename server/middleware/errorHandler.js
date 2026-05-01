@@ -1,3 +1,5 @@
+import { ValidationError } from '../utils/errors.js';
+
 const errorHandler = (err, req, res, next) => {
     console.log(`Error: ${err}`);
 

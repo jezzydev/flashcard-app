@@ -8,33 +8,45 @@ class ErrorBase extends Error {
 }
 
 class ValidationError extends ErrorBase {
-    constructor(message, field = '', errorCode = 'VALIDATION_ERROR') {
+    constructor(message, field = '', errorCode = ERROR_CODES.VALIDATION_ERROR) {
         super(message, errorCode, 400);
         this.field = field;
     }
 }
 
 class NotFoundError extends ErrorBase {
-    constructor(message, errorCode = 'NOT_FOUND') {
+    constructor(message, errorCode = ERROR_CODES.NOT_FOUND) {
         super(message, errorCode, 404);
     }
 }
 
 class AuthenticationError extends ErrorBase {
-    constructor(message, errorCode = 'NOT_AUTHENTICATED') {
+    constructor(message, errorCode = ERROR_CODES.AUTHENTICATION_FAILED) {
         super(message, errorCode, 401);
     }
 }
 
 class AuthorizationError extends ErrorBase {
-    constructor(message, errorCode = 'UNAUTHORIZED_ACCESS') {
+    constructor(message, errorCode = ERROR_CODES.UNAUTHORIZED_ACCESS) {
         super(message, errorCode, 403);
     }
 }
+
+const ERROR_CODES = {
+    REQUIRED: 'REQUIRED',
+    INVALID_TYPE: 'INVALID_TYPE',
+    INVALID_LENGTH: 'INVALID_LENGTH',
+    INVALID_FORMAT: 'INVALID_FORMAT',
+    VALIDATION_ERROR: 'VALIDATION_ERROR',
+    NOT_FOUND: 'NOT_FOUND',
+    AUTHENTICATION_FAILED: 'AUTHENTICATION_FAILED',
+    UNAUTHORIZED_ACCESS: 'UNAUTHORIZED_ACCESS',
+};
 
 export {
     ValidationError,
     NotFoundError,
     AuthenticationError,
     AuthorizationError,
+    ERROR_CODES,
 };

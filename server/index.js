@@ -5,8 +5,9 @@ import { error } from 'console';
 import logger from './middleware/logger.js';
 import { testConnection } from './db/pool.js';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
-// import authRoutes from './routes/auth.js';
+import authRoutes from './routes/auth.js';
 // import deckRoutes from './routes/decks.js';
 // import cardRoutes from './routes/cards.js';
 // import studyRoutes from './routes/study.js';
@@ -17,6 +18,7 @@ const __dirname = import.meta.dirname;
 
 app.use(express.json());
 app.use(logger);
+app.use(cookieParser());
 
 testConnection().catch((err) => {
     console.log('Failed connecting to the database.', err);
@@ -32,7 +34,7 @@ app.use(
 );
 
 //API routes
-// app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 // app.use('/api/deck', deckRoutes);
 // app.use('/api/card', cardRoutes);
 // app.use('/api/study', studyRoutes);
