@@ -21,13 +21,13 @@ class NotFoundError extends ErrorBase {
 }
 
 class AuthenticationError extends ErrorBase {
-    constructor(message, errorCode = ERROR_CODES.AUTHENTICATION_FAILED) {
+    constructor(message, errorCode = ERROR_CODES.INVALID_TOKEN) {
         super(message, errorCode, 401);
     }
 }
 
 class AuthorizationError extends ErrorBase {
-    constructor(message, errorCode = ERROR_CODES.UNAUTHORIZED_ACCESS) {
+    constructor(message, errorCode = ERROR_CODES.INVALID_TOKEN) {
         super(message, errorCode, 403);
     }
 }
@@ -41,6 +41,8 @@ const ERROR_CODES = {
     NOT_FOUND: 'NOT_FOUND',
     AUTHENTICATION_FAILED: 'AUTHENTICATION_FAILED',
     UNAUTHORIZED_ACCESS: 'UNAUTHORIZED_ACCESS',
+    INVALID_TOKEN: 'INVALID_TOKEN',
+    EXPIRED_TOKEN: 'EXPIRED_TOKEN',
 };
 
 export {

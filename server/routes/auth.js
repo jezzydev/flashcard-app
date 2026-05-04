@@ -14,6 +14,7 @@ import {
 } from '../utils/tokenGen.js';
 import crypto from 'crypto';
 import { tracingChannel } from 'diagnostics_channel';
+import { softAuthenticate } from '../middleware/authentication.js';
 
 const router = express.Router();
 const REFRESH_PATH = '/api/auth/refresh';
@@ -172,13 +173,28 @@ router.post('/refresh', async (req, res, next) => {
     }
 });
 
+//Logout user
+router.post('/logout', softAuthenticate, async (req, res, next) => {
+    try {
+        if (req.user?.sub) {
+            await revokeAllUserTokens(req.user.sub);
+        }
+        res.clearCookie('refreshToken', clearCookieSettings);
+        res.sendStatus(204);
+    } catch (error) {
+        //always clear cookie
+        res.clearCookie('refreshToken', clearCookieSettings);
+        next(error);
+    }
+});
+
 async function revokeAllUserTokens(userId) {
     const client = await pool.connect();
 
     try {
         await client.query('BEGIN');
         await client.query(
-            'UPDATE refresh_tokens SET revoked_at = $1 WHERE user_id = $2;',
+            'UPDATE refresh_tokens SET revoked_at = $1 WHERE user_id = $2 AND revoked_at IS NULL;',
             [new Date(), userId],
         );
 
@@ -190,6 +206,7 @@ async function revokeAllUserTokens(userId) {
         await client.query('COMMIT');
     } catch (error) {
         await client.query('ROLLBACK');
+        throw error;
     } finally {
         await client.release;
     }
