@@ -1,0 +1,282 @@
+{
+    "decks": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "name": "Web Development",
+            "description": "About Web Development"
+        },
+        {
+            "id": 2,
+            "user_id": 1,
+            "name": "JavaScript",
+            "description": "About JavaScript"
+        },
+        {
+            "id": 3,
+            "user_id": 1,
+            "name": "CSS",
+            "description": "About CSS"
+        },
+        {
+            "id": 4,
+            "user_id": 1,
+            "name": "HTML",
+            "description": "About HTML"
+        }
+    ],
+    "cards": [
+        {
+            "id": 1,
+            "deck_id": 1,
+            "front": "What does HTML stand for?",
+            "back": "HyperText Markup Language",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 2,
+            "deck_id": 2,
+            "front": "What is the difference between 'let' and 'const' in JavaScript?",
+            "back": "'let' allows you to reassign the variable, while 'const' creates a constant reference that cannot be reassigned. Both are block-scoped.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 3,
+            "deck_id": 1,
+            "front": "What does CSS stand for?",
+            "back": "Cascading Style Sheets",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 4,
+            "deck_id": 2,
+            "front": "What is a closure in JavaScript?",
+            "back": "A closure is a function that has access to variables in its outer (enclosing) lexical scope, even after the outer function has returned.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 5,
+            "deck_id": 1,
+            "front": "What does DOM stand for?",
+            "back": "Document Object Model",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 6,
+            "deck_id": 2,
+            "front": "What is the difference between '==' and '===' in JavaScript?",
+            "back": "'==' checks for value equality with type coercion, while '===' checks for both value and type equality (strict equality).",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 7,
+            "deck_id": 3,
+            "front": "What is Flexbox used for in CSS?",
+            "back": "Flexbox is a CSS layout model that helps distribute space and align items in a container, making it easier to create responsive layouts.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 8,
+            "deck_id": 2,
+            "front": "What is the purpose of the 'async' keyword in JavaScript?",
+            "back": "The 'async' keyword declares an asynchronous function that returns a Promise and allows the use of 'await' inside it.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 9,
+            "deck_id": 4,
+            "front": "What are semantic HTML elements?",
+            "back": "HTML elements that clearly describe their meaning to both the browser and the developer, like <header>, <nav>, <article>, <footer>, etc.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 10,
+            "deck_id": 2,
+            "front": "What is event bubbling in JavaScript?",
+            "back": "Event bubbling is when an event triggered on a child element propagates up through its parent elements in the DOM tree.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 11,
+            "deck_id": 3,
+            "front": "What is the box model in CSS?",
+            "back": "The CSS box model describes the rectangular boxes generated for elements, consisting of content, padding, border, and margin.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 12,
+            "deck_id": 2,
+            "front": "What is the difference between null and undefined in JavaScript?",
+            "back": "'undefined' means a variable has been declared but not assigned a value. 'null' is an intentional assignment representing no value or empty object.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 13,
+            "deck_id": 3,
+            "front": "What is CSS Grid?",
+            "back": "CSS Grid is a two-dimensional layout system that allows you to create complex responsive layouts using rows and columns.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 14,
+            "deck_id": 2,
+            "front": "What is hoisting in JavaScript?",
+            "back": "Hoisting is JavaScript's behavior of moving variable and function declarations to the top of their scope before code execution.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 15,
+            "deck_id": 4,
+            "front": "What does the 'viewport' meta tag do?",
+            "back": "It controls how a webpage is displayed on mobile devices by setting the viewport width and initial scale for responsive design.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 16,
+            "deck_id": 2,
+            "front": "What is the 'this' keyword in JavaScript?",
+            "back": "'this' refers to the object that is executing the current function. Its value depends on how the function is called.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 17,
+            "deck_id": 3,
+            "front": "What is specificity in CSS?",
+            "back": "Specificity determines which CSS rule is applied when multiple rules target the same element. It's calculated based on selector types (inline, IDs, classes, elements).",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 18,
+            "deck_id": 2,
+            "front": "What is the difference between a for loop and forEach in JavaScript?",
+            "back": "A for loop can be broken or continued with keywords, while forEach cannot. For loops can iterate over any iterable, forEach is only for arrays.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 19,
+            "deck_id": 1,
+            "front": "What is localStorage in the browser?",
+            "back": "localStorage is a web storage API that allows you to store key-value pairs in the browser with no expiration date, persisting even after the browser is closed.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 20,
+            "deck_id": 2,
+            "front": "What is a Promise in JavaScript?",
+            "back": "A Promise is an object representing the eventual completion or failure of an asynchronous operation, with three states: pending, fulfilled, or rejected.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 21,
+            "deck_id": 4,
+            "front": "What is the purpose of the 'alt' attribute in an <img> tag?",
+            "back": "The 'alt' attribute provides alternative text for an image if it cannot be displayed, and is essential for accessibility and SEO.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 22,
+            "deck_id": 2,
+            "front": "What is the spread operator in JavaScript?",
+            "back": "The spread operator (...) expands an iterable (like an array) into individual elements, useful for copying arrays or passing multiple arguments.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 23,
+            "deck_id": 3,
+            "front": "What is the z-index property in CSS?",
+            "back": "The z-index property controls the stacking order of positioned elements, with higher values appearing in front of lower values.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 24,
+            "deck_id": 2,
+            "front": "What is destructuring in JavaScript?",
+            "back": "Destructuring is a syntax that allows you to unpack values from arrays or properties from objects into distinct variables in a concise way.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 25,
+            "deck_id": 1,
+            "front": "What does HTTP stand for?",
+            "back": "HyperText Transfer Protocol",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 26,
+            "deck_id": 3,
+            "front": "What is the difference between margin and padding in CSS?",
+            "back": "Margin is the space outside an element's border, while padding is the space inside an element's border, between the border and content.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 27,
+            "deck_id": 2,
+            "front": "What is a callback function in JavaScript?",
+            "back": "A callback function is a function passed as an argument to another function, to be executed after the first function completes.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        },
+        {
+            "id": 28,
+            "deck_id": 1,
+            "front": "What is responsive web design?",
+            "back": "An approach to web design that makes web pages render well on various devices and screen sizes using flexible layouts, images, and CSS media queries.",
+            "interval": 1,
+            "ease_factor": 2.5,
+            "repetitions": 0
+        }
+    ]
+}

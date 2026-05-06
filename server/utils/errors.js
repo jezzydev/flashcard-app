@@ -34,6 +34,7 @@ class AuthorizationError extends ErrorBase {
 
 const ERROR_CODES = {
     REQUIRED: 'REQUIRED',
+    INVALID: 'INVALID',
     INVALID_TYPE: 'INVALID_TYPE',
     INVALID_LENGTH: 'INVALID_LENGTH',
     INVALID_FORMAT: 'INVALID_FORMAT',

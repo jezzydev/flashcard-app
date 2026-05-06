@@ -8,7 +8,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
 import authRoutes from './routes/auth.js';
-// import deckRoutes from './routes/decks.js';
+import deckRoutes from './routes/decks.js';
+import { authenticateToken } from './middleware/authentication.js';
 // import cardRoutes from './routes/cards.js';
 // import studyRoutes from './routes/study.js';
 
@@ -35,7 +36,7 @@ app.use(
 
 //API routes
 app.use('/api/auth', authRoutes);
-// app.use('/api/deck', deckRoutes);
+app.use('/api/decks', authenticateToken, deckRoutes);
 // app.use('/api/card', cardRoutes);
 // app.use('/api/study', studyRoutes);
 
