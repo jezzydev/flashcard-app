@@ -7,10 +7,10 @@ import { testConnection } from './db/pool.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
+import { authenticateToken } from './middleware/authentication.js';
 import authRoutes from './routes/auth.js';
 import deckRoutes from './routes/decks.js';
-import { authenticateToken } from './middleware/authentication.js';
-// import cardRoutes from './routes/cards.js';
+import cardRoutes from './routes/cards.js';
 // import studyRoutes from './routes/study.js';
 
 const app = express();
@@ -37,7 +37,7 @@ app.use(
 //API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/decks', authenticateToken, deckRoutes);
-// app.use('/api/card', cardRoutes);
+app.use('/api/cards', authenticateToken, cardRoutes);
 // app.use('/api/study', studyRoutes);
 
 // Catch-all for unknown API routes
