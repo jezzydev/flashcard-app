@@ -74,10 +74,10 @@ router.get('/:id/stats', async (req, res, next) => {
         isValidDeckId(deckId);
 
         const cardResult = await pool.query(
-            `SELECT count(c.id) as total_cards, 
-            COUNT(c.id) FILTER(WHERE c.due_date <= now()) as due_today,
-            COUNT(rvw.id) FILTER (WHERE rating >= 3) * 100.0 / NULLIF(COUNT(rvw.id), 0) AS retention_rate
-            FROM cards 
+            `SELECT count(distinct c.id) as total_cards, 
+                COUNT(distinct c.id) FILTER(WHERE c.due_date <= now()) as due_today,
+                COUNT(rvw.id) FILTER (WHERE rating >= 3) * 100.0 / NULLIF(COUNT(rvw.id), 0) AS retention_rate
+            FROM cards c
             LEFT JOIN session_reviews rvw ON c.id = rvw.card_id
             WHERE c.deck_id = $1
             GROUP BY c.deck_id; `,
@@ -110,12 +110,12 @@ router.get('/:id/stats', async (req, res, next) => {
             const studyDates = streakResult.rows;
             let anchor = new Date();
 
-            if (!isSameDay(studyDates[0], anchor)) {
+            if (!isSameDay(new Date(studyDates[0].study_date), anchor)) {
                 anchor.setDate(anchor.getDate() - 1); //set anchor to yesterday if user has not yet studied today
             }
 
-            for (let i = 0; i < studyDates.length - 1; i++) {
-                if (isSameDay(studyDates[i], archor)) {
+            for (let i = 0; i <= studyDates.length - 1; i++) {
+                if (isSameDay(new Date(studyDates[i].study_date), anchor)) {
                     streak++;
                     anchor.setDate(anchor.getDate() - 1);
                 } else {
@@ -128,7 +128,9 @@ router.get('/:id/stats', async (req, res, next) => {
             stats: {
                 total_cards: cardResult.rows[0].total_cards,
                 due_today: cardResult.rows[0].due_today,
-                retention_rate: cardResult.rows[0].retention_rate,
+                retention_rate: Number(
+                    cardResult.rows[0].retention_rate,
+                ).toFixed(2),
             },
             streak: streak,
         });
@@ -157,6 +159,28 @@ router.get('/:id', async (req, res, next) => {
         }
 
         res.json(result.rows[0]);
+    } catch (error) {
+        next(error);
+    }
+});
+
+//Add a card to a deck
+router.post('/:id/cards', async (req, res, next) => {
+    try {
+        const deckId = req.params.id;
+        const card = req.body;
+        isValidDeckId(deckId);
+        isValidCard(card);
+
+        const result = await pool.query(
+            `INSERT INTO cards (deck_id, front, back) VALUES ($1, $2, $3) RETURNING *;`,
+            [deckId, card.front, card.back],
+        );
+
+        res.status(201).json({
+            message: 'New card created.',
+            card: result.rows[0],
+        });
     } catch (error) {
         next(error);
     }
@@ -243,28 +267,6 @@ router.delete('/:id', async (req, res, next) => {
         }
 
         res.json({ mesage: 'Deck deleted.', deck: result.rows[0] });
-    } catch (error) {
-        next(error);
-    }
-});
-
-//Add a card to a deck
-router.post('/:id/cards', async (req, res, next) => {
-    try {
-        const deckId = req.params.id;
-        const card = req.body;
-        isValidDeckId(deckId);
-        isValidCard(card);
-
-        const result = await pool.query(
-            `INSERT INTO cards (deck_id, front, back) VALUES ($1, $2, $3) RETURNING *;`,
-            [deckId, card.front, card.back],
-        );
-
-        res.status(201).json({
-            message: 'New card created.',
-            card: result.rows[0],
-        });
     } catch (error) {
         next(error);
     }

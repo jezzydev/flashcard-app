@@ -11,7 +11,7 @@ import { authenticateToken } from './middleware/authentication.js';
 import authRoutes from './routes/auth.js';
 import deckRoutes from './routes/decks.js';
 import cardRoutes from './routes/cards.js';
-// import studyRoutes from './routes/study.js';
+import studyRoutes from './routes/study.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -38,7 +38,7 @@ app.use(
 app.use('/api/auth', authRoutes);
 app.use('/api/decks', authenticateToken, deckRoutes);
 app.use('/api/cards', authenticateToken, cardRoutes);
-// app.use('/api/study', studyRoutes);
+app.use('/api/study', authenticateToken, studyRoutes);
 
 // Catch-all for unknown API routes
 app.use('/api', (req, res, next) => {
