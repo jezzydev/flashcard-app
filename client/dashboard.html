@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./assets/images/favicon-32x32.png"
+    />
+    <link rel="stylesheet" href="./css/base.css">    
+    <link rel="stylesheet" href="./css/components/button.css">    
+    <link rel="stylesheet" href="./css/pages/dashboard.css">
+
+    <title>Frontend Mentor | Flashcard App - Dashboard</title>
+</head>
+<body>
+    <nav>
+        <a href="dashboard.html">
+            <img src="./assets/images/logo-large.svg" alt="Logo">
+        </a>
+        <div class="Nav__right">
+            <button class="Nav__btn Btn Active">Dashboard</button>
+            <button class="Nav__btn Btn Logout">Log out</button>
+        </div>
+    </nav>
+    <main>
+        <div class="Page__header">
+            <div>
+                <h1>My Decks</h1>
+                <p>Welcome back, username</p>
+            </div>
+            <button class="Btn Btn--primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> New Deck</button>
+        </div>
+        <div class="Stats__container">
+            <div class="Stats__card">
+                <div class="Stats__icon Yellow">📚</div>
+                <div class="Stats__info">
+                    <div class="Stats__num">40</div>
+                    <div class="Stats__label">Total decks</div>
+                </div>
+            </div>
+            <div class="Stats__card">
+                <div class="Stats__icon Blue">⏰</div>
+                <div class="Stats__info">
+                    <div class="Stats__num">20</div>
+                    <div class="Stats__label">Cards due today</div>
+                </div>
+            </div>
+            <div class="Stats__card">
+                <div class="Stats__icon Pink">🔥</div>
+                <div class="Stats__info">
+                    <div class="Stats__num">7</div>
+                    <div class="Stats__label">Day streak</div>
+                </div>
+            </div>
+        </div>
+        <section>
+            <h2 class="Section__label">Your Decks</h2>
+            <div class="Decks__container">
+                <a class="DeckCard" href="deck.html">
+                    <div class="DeckCard__strip Yellow"></div>
+                    <div class="DeckCard__content">
+                        <div class="DeckCard__name">JavaScript Core</div>
+                        <div class="DeckCard__description">Closures, prototypes, async/await, event loop and ES6+ patterns. Closures, prototypes, async/await, event loop and ES6+ patterns.</div>
+                    </div>
+                    <div class="DeckCard__footer">
+                        <div class="DeckCard__counts">
+                            <div class="Count__pill">
+                                <div class="Count__dot Total"></div>48 cards
+                            </div>
+                            <div class="Count__pill">
+                                <div class="Count__dot Due"></div>12 due
+                            </div>
+                        </div>
+                        <div class="DeckCard__dueBadge">12 due</div>
+                    </div>
+                    <button class="DeckCard__menuBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="12" cy="19" r="1.5"></circle></svg>
+                    </button>
+                </a>
+                <!-- Add new deck -->
+                <div class="DeckCard DeckCard--addDeck">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Create new deck
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- New deck modal -->
+</body>
+</html>

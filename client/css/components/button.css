@@ -4,15 +4,32 @@
     border-radius: 999px;
     color: var(--color-neutral-900);
     cursor: pointer;
-    transition: transform 0.1s, box-shadow 0.1s;    
+    transition:
+        transform 0.1s,
+        box-shadow 0.1s;
 }
 
-.Btn-submit {
+.Btn--submit {
     background: var(--color-yellow-500);
-    box-shadow: 4px 4px 0 0 var(--color-neutral-900);
+    box-shadow: var(--shadow-m);
 }
 
-.Btn-submit:hover {
+.Btn--primary {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 20px;
+    background: var(--color-yellow-500);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: var(--shadow-m);
+    white-space: nowrap;
+    width: auto;
+}
+
+.Btn--submit:hover,
+.Btn--primary:hover {
     transform: translate(-1px, -1px);
     box-shadow: 5px 5px 0 0 var(--color-neutral-900);
 }

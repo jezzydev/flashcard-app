@@ -1,0 +1,38 @@
+/* Background decorations */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: -80px;
+    right: -80px;
+    width: 320px;
+    height: 320px;
+    background: var(--color-yellow-500);
+    border-radius: 50%;
+    border: 2px solid var(--color-neutral-900);
+    opacity: 0.4;
+    z-index: 0;
+}
+
+
+body::after {
+    content: '';
+    position: fixed;
+    bottom: -60px;
+    left: -60px;
+    width: 240px;
+    height: 240px;
+    background: var(--color-blue-400);    
+    border-radius: 50%;
+    border: 2px solid var(--color-neutral-900);
+    opacity: 0.3;
+    z-index: 0;
+}
