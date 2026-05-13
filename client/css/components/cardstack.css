@@ -1,0 +1,74 @@
+.CardStack {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+}
+
+.Card {
+    background: var(--color-neutral-50);
+    border: 2px solid var(--color-neutral-900);
+    border-radius: 20px;
+    padding: 40px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 4px 4px 0 0 var(--color-neutral-900);
+}
+
+.Card__badge {
+    position: absolute;
+    top: -14px;
+    right: 20px;
+    background: var(--color-blue-400); 
+    border: 2px solid var(--color-neutral-900);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;    
+    box-shadow: 2px 2px 0 0 var(--color-neutral-900);        
+}
+
+.Card__logo {
+    margin-bottom: 32px;
+}
+
+.Card__heading {
+    margin-bottom: 8px;
+
+    h1 {
+        font-size: 26px;
+        font-weight: 700;    
+        line-height: 1.2;   
+        letter-spacing: -0.5px; 
+        margin: 0;
+    }
+
+    p {
+        font-size: 13.5px;
+        color: var(--color-neutral-500);
+        margin-top: 6px;
+    }    
+}
+
+.CardStack::before, .CardStack::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-neutral-50);
+    border: 2px solid var(--color-neutral-900);
+    border-radius: 20px;
+}
+
+.CardStack::before {
+    transform: rotate(-3deg) translate(-4px, 6px);
+    background: var(--color-yellow-500);
+    opacity: 0.7;
+    z-index: -2;
+}
+
+.CardStack::after {
+    transform: rotate(2deg) translate(4px, 8px);
+    background: var(--color-blue-400);
+    opacity: 0.5;
+    z-index: -1;
+}

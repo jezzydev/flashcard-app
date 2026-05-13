@@ -1,0 +1,164 @@
+
+.Deco-1 {
+    top: 10%;
+    left: 7%;
+}
+
+.Deco-2 {
+    top: 18%;
+    right: 10%;
+}
+
+.Deco-3 {
+    bottom: 22%;
+    left: 5%;
+}
+
+.Deco-4 {
+    bottom: 12%;
+    right: 7%;
+}
+
+.Deco-5 {
+    top: 48%;
+    right: 4%;
+}
+
+.CardStack {
+    max-width: 440px;
+}
+
+.CardStack::before {
+    background: var(--color-pink-300);
+    opacity: 0.65;
+}
+
+.CardStack::after {
+    background: var(--color-yellow-500);
+}
+
+.Card__badge {
+    background: var(--color-pink-300);
+}
+
+.Steps {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 20px 0 40px;
+
+    .Step {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: var(--color-neutral-500);
+    }
+
+    
+
+    .Step__line {
+        flex: 1;
+        height: 2px;
+        background: var(--color-neutral-300);
+        border-radius: 2px;;
+    }
+
+    .Step__num {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 2px solid var(--color-neutral-900);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        flex-shrink: 0;
+        background: var(--color-neutral-25);
+        color: var(--color-neutral-500);
+    }
+
+    .Step.Active {
+        color: var(--color-neutral-900);
+
+        .Step__num {
+            background: var(--color-yellow-500);
+        }
+    }
+}
+
+.RegisterForm {
+    margin-top: 24px;
+    gap: 15px;     
+
+    .Terms__row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 14px;
+        background: var(--color-neutral-25);
+        border: 2px solid var(--color-neutral-900);
+        border-radius: 999px;
+
+        input[type='checkbox'] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--color-neutral-900);
+            cursor: pointer;
+            margin-top: 1px;
+            flex-shrink: 0;
+        }
+
+        label {
+            font-size: 12.5px;
+            color: var(--color-neutral-500);
+            cursor: pointer;
+            line-height: 1.5;
+
+            a {
+                color: var(--color-neutral-900);
+                font-weight: 600;
+                text-decoration: none;
+                border-bottom: 1.5px solid var(--color-yellow-500);
+                transition: border-color 0.15s;
+            }
+
+            a:hover {
+                border-color: var(--color-neutral-900);
+            }
+        }
+    }
+
+    .Toast {
+        display: none;
+        align-items: center;
+        background: var(--color-neutral-110);
+        border: 2px solid var(--color-green-500);
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--color-green-500);
+        box-shadow: 2px 2px 0 0 var(--color-neutral-900);
+    }
+
+    .LoginLink {
+        text-align: center;
+        font-size: 13px;
+        color: var(--color-neutral-500);
+
+        a {
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            text-decoration: none;
+            border-bottom: 2px solid var(--color-yellow-500);
+            transition: border-color 0.15s;
+        }
+
+        a:hover {
+            border-color: var(--color-neutral-900);
+        }
+    }   
+}

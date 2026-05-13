@@ -1,0 +1,42 @@
+
+.Deco-1 {
+    top: 12%;
+    left: 8%;
+}
+
+.Deco-2 {
+    top: 20%;
+    right: 12%;
+}
+
+.Deco-3 {
+    bottom: 25%;
+    left: 6%;
+}
+
+.Deco-4 {
+    bottom: 15%;
+    right: 8%;
+}
+
+.LoginForm {
+    margin-top: 28px;       
+
+    .RegisterLink {
+        text-align: center;
+        font-size: 13px;
+        color: var(--color-neutral-500);
+
+        a {
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            text-decoration: none;
+            border-bottom: 2px solid var(--color-yellow-500);
+            transition: border-color 0.15s;
+        }
+
+        a:hover {
+            border-color: var(--color-neutral-900);
+        }
+    }    
+}
