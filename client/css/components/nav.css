@@ -1,0 +1,58 @@
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    height: 64px;
+    background: var(--card-bg);
+    border-bottom: 2px solid var(--border);
+    padding: 0 24px;
+    z-index: 100;
+
+    a {
+        display: flex;
+        align-items: center;
+    }
+
+    .Nav__right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .Nav__btn {
+        padding: 8px 18px;
+        font-size: 13.5px;
+        font-weight: 600;
+        border: 2px solid var(--border);
+        border-radius: 40px;
+        background: transparent;
+        cursor: pointer;
+        color: var(--text);
+        transition: background 0.12s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .Nav__btn:hover {
+        background: var(--cream);
+    }
+
+    .Nav__btn.Active {
+        background: var(--color-yellow-500);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .Nav__btn.Logout {
+        color: var(--text-muted);
+        border-color: var(--color-neutral-350);
+        font-weight: 500;
+    }
+
+    .Nav__btn.Logout:hover {
+        color: var(--text);
+        border-color: var(--border);
+    }
+}

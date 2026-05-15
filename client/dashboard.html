@@ -12,6 +12,11 @@
     />
     <link rel="stylesheet" href="./css/base.css">    
     <link rel="stylesheet" href="./css/components/button.css">    
+    <link rel="stylesheet" href="./css/components/nav.css">    
+    <link rel="stylesheet" href="./css/components/stats.css">    
+    <link rel="stylesheet" href="./css/components/card.css">    
+    <link rel="stylesheet" href="./css/components/form.css">    
+    <link rel="stylesheet" href="./css/components/modal.css">    
     <link rel="stylesheet" href="./css/pages/dashboard.css">
 
     <title>Frontend Mentor | Flashcard App - Dashboard</title>
@@ -27,68 +32,139 @@
         </div>
     </nav>
     <main>
-        <div class="Page__header">
+        <section class="Page__header">
             <div>
                 <h1>My Decks</h1>
                 <p>Welcome back, username</p>
             </div>
             <button class="Btn Btn--primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> New Deck</button>
-        </div>
-        <div class="Stats__container">
+        </section>
+        <section class="Stats__container">
             <div class="Stats__card">
                 <div class="Stats__icon Yellow">📚</div>
                 <div class="Stats__info">
-                    <div class="Stats__num">40</div>
-                    <div class="Stats__label">Total decks</div>
+                    <p class="Stats__num">40</p>
+                    <p class="Stats__label">Total decks</p>
                 </div>
             </div>
             <div class="Stats__card">
                 <div class="Stats__icon Blue">⏰</div>
                 <div class="Stats__info">
-                    <div class="Stats__num">20</div>
-                    <div class="Stats__label">Cards due today</div>
+                    <p class="Stats__num">20</p>
+                    <p class="Stats__label">Cards due today</p>
                 </div>
             </div>
             <div class="Stats__card">
                 <div class="Stats__icon Pink">🔥</div>
                 <div class="Stats__info">
-                    <div class="Stats__num">7</div>
-                    <div class="Stats__label">Day streak</div>
-                </div>
-            </div>
-        </div>
-        <section>
-            <h2 class="Section__label">Your Decks</h2>
-            <div class="Decks__container">
-                <a class="DeckCard" href="deck.html">
-                    <div class="DeckCard__strip Yellow"></div>
-                    <div class="DeckCard__content">
-                        <div class="DeckCard__name">JavaScript Core</div>
-                        <div class="DeckCard__description">Closures, prototypes, async/await, event loop and ES6+ patterns. Closures, prototypes, async/await, event loop and ES6+ patterns.</div>
-                    </div>
-                    <div class="DeckCard__footer">
-                        <div class="DeckCard__counts">
-                            <div class="Count__pill">
-                                <div class="Count__dot Total"></div>48 cards
-                            </div>
-                            <div class="Count__pill">
-                                <div class="Count__dot Due"></div>12 due
-                            </div>
-                        </div>
-                        <div class="DeckCard__dueBadge">12 due</div>
-                    </div>
-                    <button class="DeckCard__menuBtn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="12" cy="19" r="1.5"></circle></svg>
-                    </button>
-                </a>
-                <!-- Add new deck -->
-                <div class="DeckCard DeckCard--addDeck">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    Create new deck
+                    <p class="Stats__num">7</p>
+                    <p class="Stats__label">Day streak</p>
                 </div>
             </div>
         </section>
+        <!-- Decks list -->
+        <section class="CardsListSection">
+            <h2 class="Section__label">Your Decks</h2>
+            <ul class="CardsList DeckGrid">
+                <li class="CardItem DeckCard">
+                    <a class="DeckCardLink" href="deck.html">
+                        <div class="DeckCard__strip Yellow"></div>
+                        <div class="CardItem__content">
+                            <p class="CardItem__title">JavaScript Core</p>
+                            <p class="CardItem__sub">Closures, prototypes, async/await, event loop and ES6+ patterns. Closures, prototypes, async/await, event loop and ES6+ patterns.</p>
+                        </div>
+                        <div class="CardItem__footer">
+                            <div class="CardItem__meta">
+                                <div class="Count__pill">
+                                    <p class="Count__dot Total"></p>48 cards
+                                </div>
+                                <div class="Count__pill">
+                                    <p class="Count__dot Due"></p>12 due
+                                </div>
+                            </div>
+                            <p class="CardItem__chip High">12 due</p>
+                        </div>                        
+                    </a>
+                    <button class="CardItem__menuBtn">
+                        <!-- <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="12" cy="19" r="1.5"></circle></svg> -->
+                         <svg fill="currentColor" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="m12 10.3125c.9141 0 1.6875.7734 1.6875 1.6875 0 .9492-.7734 1.6875-1.6875 1.6875-.9492 0-1.6875-.7383-1.6875-1.6875 0-.9141.7383-1.6875 1.6875-1.6875zm-1.6875-3.65625c0-.91406.7383-1.6875 1.6875-1.6875.9141 0 1.6875.77344 1.6875 1.6875 0 .94922-.7734 1.6875-1.6875 1.6875-.9492 0-1.6875-.73828-1.6875-1.6875zm0 10.68755c0-.9141.7383-1.6876 1.6875-1.6876.9141 0 1.6875.7735 1.6875 1.6876 0 .9492-.7734 1.6874-1.6875 1.6874-.9492 0-1.6875-.7382-1.6875-1.6874z"/></svg> 
+                    </button>
+                </li>
+                
+                <!-- Add new deck -->
+                <li class="CardItem DeckCard DeckCard--addDeck">
+                    <button class="DeckCard__addDeckBtn" type="button" aria-label="Create new deck button">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Create new deck
+                    </button>                    
+                </li>  
+                
+            </ul>
+        </section>
     </main>
     <!-- New deck modal -->
+    <div class="Modal__overlay">
+        <div class="Modal">
+            <h3 class="Modal__title">Create new deck</h3>
+            <button class="Modal__closeBtn" type="button" aria-label="Button to close the modal">✕</button>
+            <form class="Form ModalForm CreateDeckForm">
+                <div class="Field">
+                    <label for="add-deck-name">Deck name</label>
+                    <div class="Field__inputWrap">
+                        <input type="text" id="add-deck-name" placeholder="e.g. Japanese N3 Vocabulary">
+                    </div>
+                    <div class="Field__error" id="add-deck-name-error">Required</div>
+                </div>
+                <div class="Field">
+                    <label for="add-deck-description">Description<span class="Optional">optional</span></label>
+                    <div class="Field__inputWrap">
+                        <textarea id="add-deck-description" rows="3" placeholder="What will you study in this deck?"></textarea>
+                    </div>
+                </div>
+                <div class="Modal__actions">
+                    <button class="Btn Btn--cancel" type="button">Cancel</button>
+                    <button class="Btn Btn--submit" type="submit">Create deck</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Edit deck modal -->
+      <div class="Modal__overlay" id="edit-modal">
+        <div class="Modal">
+          <h3 class="Modal__title">Edit deck</h3>
+          <button class="Modal__closeBtn" type="button" aria-label="Button to close the modal">✕</button>
+          <form class="Form ModalForm EditDeckForm">
+              <div class="Field">
+                  <label for="edit-deck-name">Deck name</label>
+                  <div class="Field__inputWrap">
+                      <input type="text" id="edit-deck-name" placeholder="e.g. Japanese N3 Vocabulary">
+                  </div>
+                  <div class="Field__error" id="edit-deck-name-error">Required</div>
+              </div>
+              <div class="Field">
+                  <label for="edit-deck-description">Description<span class="Optional">optional</span></label>
+                  <div class="Field__inputWrap">
+                      <textarea id="edit-deck-description" rows="3" placeholder="What will you study in this deck?"></textarea>
+                  </div>                 
+              </div>
+              <div class="Modal__actions">
+                  <button class="Btn Btn--cancel" type="button" aria-label="Cancel deck update">Cancel</button>
+                  <button class="Btn Btn--submit" type="submit">Update deck</button>
+              </div>
+          </form>
+        </div>
+      </div>  
+      <!-- Delete deck modal -->
+      <div class="Modal__overlay" id="delete-modal">
+        <div class="Modal Modal--delete">
+          <h3 class="Modal__title">Delete this deck?</h3>
+          <button class="Modal__closeBtn" type="button" aria-label="Button to close the modal">✕</button>
+          <p class="DeleteMsg"></p>
+          <div class="Modal__actions">
+            <button class="Btn Btn--cancel" type="button" aria-label="Cancel deck deletion">Cancel</button>
+            <button class="Btn Btn--delete" type="button">Delete deck</button>
+          </div>
+        </div>
+      </div>  
 </body>
 </html>

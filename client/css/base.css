@@ -11,11 +11,13 @@
 :root {
     /* Colors */
     --color-neutral-900: #2e1401;
+    --color-neutral-900a: #2e14018c;
     --color-neutral-600: #6d5b4d;
     --color-neutral-500: #7a5c3a;
     --color-neutral-400: #b8a08a;
     --color-neutral-350: #c8b8a4;
     --color-neutral-300: #d4c4b0;
+    --color-neutral-115: #ede5d8;
     --color-neutral-110: #edfaf3;
     --color-neutral-100: #f7f3f0;
     --color-neutral-50: #fffdf7;
@@ -30,8 +32,15 @@
     --color-pink-500: #f073a3;
     --color-pink-400: #fc8ae5;
     --color-pink-300: #f4a1c0;
+    --color-red-800: #7b241c;
     --color-red-500: #c0392b;
     --color-green-500: #1e8449;
+    --text: var(--color-neutral-900);
+    --text-muted: var(--color-neutral-500);
+    --border: var(--color-neutral-900);
+    --input-bg: var(--color-neutral-25);
+    --card-bg: var(--color-neutral-50);
+    --cream: var(--color-neutral-20);
     --shadow-sm: 2px 2px 0 0 var(--color-neutral-900);
     --shadow-m: 4px 4px 0 0 var(--color-neutral-900);
 }
@@ -39,7 +48,7 @@
 body {
     font-family: Poppins, sans-serif;
     background-color: var(--color-neutral-100);
-    color: var(--color-neutral-900);
+    color: var(--text);
     min-height: 100vh;
 }
 
@@ -53,7 +62,8 @@ img {
 }
 
 button,
-input {
+input,
+textarea {
     font-family: inherit;
     font-size: 100%;
     margin: 0;
@@ -81,6 +91,13 @@ button:-moz-focusring,
     outline: 1px dotted ButtonText;
 }
 
+a,
+a:link,
+a:active,
+a:visited {
+    color: var(--text);
+}
+
 .Deco {
     position: fixed;
     z-index: 0;
@@ -106,4 +123,31 @@ button:-moz-focusring,
 
 .Green {
     background: var(--color-green-500);
+}
+
+main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+}
+
+/* Page Header */
+.Page__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+
+    h1 {
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: -0.4px;
+        margin: 0;
+    }
+
+    p {
+        font-size: 13.5px;
+        color: var(--text-muted);
+        margin-top: 3px;
+    }
 }

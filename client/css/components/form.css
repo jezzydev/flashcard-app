@@ -3,13 +3,6 @@
     flex-direction: column;
     gap: 16px;
 
-    .Btn--submit {
-        padding: 13px 20px;
-        font-size: 15px;
-        font-weight: 700;
-        margin-top: 24px;
-    }
-
     .Divider {
         display: flex;
         align-items: center;
@@ -27,7 +20,7 @@
 
     .Divider span {
         font-size: 12px;
-        color: var(--color-neutral-500);
+        color: var(--text-muted);
         font-weight: 500;
     }
 }
@@ -44,25 +37,28 @@
     .Field__inputWrap {
         position: relative;
 
-        input {
+        input,
+        textarea {
             width: 100%;
             padding: 12px 16px;
             font-size: 14px;
-            background: var(--color-neutral-25);
-            border: 2px solid var(--color-neutral-900);
+            background: var(--input-bg);
+            border: 2px solid var(--border);
             border-radius: 10px;
             outline: none;
             transition:
                 box-shadow 0.15s,
                 background 0.15s;
-            color: var(--color-neutral-900);
+            color: var(--text);
         }
 
-        input::placeholder {
+        input::placeholder,
+        textarea::placeholder {
             color: var(--color-neutral-400);
         }
 
-        input:focus {
+        input:focus,
+        textarea:focus {
             background: var(--color-neutral-0);
             box-shadow: var(--shadow-sm);
         }
@@ -79,8 +75,15 @@
             padding: 2px;
             display: flex;
             align-items: center;
-            color: var(--color-neutral-500);
+            color: var(--text-muted);
         }
+    }
+
+    .Optional {
+        font-size: 11px;
+        font-weight: 400;
+        color: var(--text-muted);
+        margin-left: 6px;
     }
 }
 

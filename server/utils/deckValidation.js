@@ -47,7 +47,7 @@ export const isValidDescription = (description) => {
 
     if (description !== null && typeof description !== 'string')
         throw new ValidationError(
-            'Name must be a string.',
+            'Description must be a string.',
             field,
             ERROR_CODES.INVALID_TYPE,
         );

@@ -1,0 +1,190 @@
+.CardsListSection {
+    .CardsList__header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-muted);
+    }
+
+    .CardsList {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .CardItem {
+        display: flex;
+        flex-direction: column;
+        background: var(--card-bg);
+        border: 2px solid var(--border);
+        border-radius: 14px;
+        color: var(--text);
+        padding: 0;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .CardItem__content {
+        padding: 18px 20px;
+        flex: 1;
+
+        .CardItem__title {
+            font-size: 14.5px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .CardItem__sub {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .CardItem__subLabel {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+    }
+
+    .CardItem__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        border-top: 1.5px solid var(--color-neutral-115);
+        padding: 12px 20px;
+
+        .CardItem__meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .CardItem__easeBar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            .EaseBar__track {
+                width: 52px;
+                height: 5px;
+                background: #e8ddd0;
+                border-radius: 3px;
+                border: 1px solid rgb(46 20 1 / 15%);
+                overflow: hidden;
+            }
+
+            .EaseBar__fill {
+                height: 100%;
+                border-radius: 3px;
+                background: var(--color-yellow-500);
+                transition: width 0.3s;
+            }
+
+            .EaseBar__label {
+                font-size: 10.5px;
+                font-weight: 600;
+                color: var(--text-muted);
+            }
+        }
+
+        .CardItem__chip {
+            border: 1.5px solid var(--border);
+            border-radius: 20px;
+            padding: 3px 9px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+
+            &.Low {
+                background: var(--color-blue-400);
+            }
+
+            &.Med {
+                background: #e8f5e9;
+                border-color: #7bc67e;
+                color: #1e5e2e;
+            }
+
+            &.High {
+                background: var(--color-yellow-500);
+            }
+        }
+    }
+
+    .CardItem__menuBtn {
+        position: absolute;
+        top: 16px;
+        right: 14px;
+        width: 28px;
+        height: 28px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+            background 0.12s,
+            color 0.12s;
+    }
+
+    .CardItem__menuBtn:hover {
+        color: var(--text);
+        background: var(--cream);
+    }
+
+    .DropdownMenu {
+        display: none;
+        position: absolute;
+        right: 18px;
+        top: 40px;
+        background: var(--card-bg);
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        padding: 6px;
+        box-shadow: var(--shadow);
+        z-index: 50;
+        min-width: 120px;
+
+        .DropdownItem {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            transition: background 0.1s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+
+            &.Delete {
+                color: var(--color-red-500);
+            }
+        }
+
+        .DropdownItem:hover {
+            background: var(--cream);
+        }
+    }
+
+    .DropdownMenu.Open {
+        display: block;
+    }
+}

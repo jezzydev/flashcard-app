@@ -1,0 +1,62 @@
+.Modal__overlay.Open {
+    display: flex;
+}
+
+.Modal__overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--color-neutral-900a);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.Modal {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: var(--shadow-m);
+    position: relative;
+
+    h3 {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+        margin-bottom: 20px;
+    }
+
+    .Modal__closeBtn {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 30px;
+        height: 30px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: var(--text-muted);
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        transition: background 0.12s;
+    }
+
+    .Modal__closeBtn:hover {
+        background: var(--cream);
+        color: var(--text);
+    }
+
+    .Modal__actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 4px;
+        justify-content: flex-end;
+    }
+}

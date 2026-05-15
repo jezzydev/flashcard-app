@@ -1,0 +1,36 @@
+.Stats__container.DeckStats {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+
+    .Stats__card {
+        flex-direction: column;
+        align-items: start;
+        gap: 0;
+        padding: 14px 16px;
+    }
+}
+
+.AddCardSection {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 27px;
+    box-shadow: var(--shadow-sm);
+
+    .AddCard__title {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .AddCardForm__footer {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+}
