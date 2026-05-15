@@ -1,0 +1,483 @@
+main {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+    align-items: start;
+}
+
+.Breadcrumb {
+    grid-column: 1 / -1;
+}
+
+/* Flashcard */
+.StudyFlashcard__container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.StudyProgressBar {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    .StudyProgressBar__label {
+        color: var(--text-muted);
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .StudyProgressBar__track {
+        flex: 1;
+        height: 8px;
+    }
+
+    .StudyProgressBar__count {
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+}
+
+.Flashcard {
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    min-height: 280px;
+    box-shadow: var(--shadow-m);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: transform 0.15s;
+    user-select: none;
+    position: relative;
+
+    &.Flashcard--questionFace {
+        background: var(--color-pink-400);
+    }
+
+    &.Flashcard--answerFace {
+        background: var(--color-blue-400);
+    }
+
+    .Flashcard__deckLabel {
+        position: absolute;
+        top: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 6px 12px;
+        background: var(--color-neutral-0);
+        border: 1.5px solid var(--border);
+        box-shadow: 1px 1px 0 0 var(--color-neutral-900);
+        border-radius: 20px;
+        font-size: 12px;
+        line-height: 130%;
+        letter-spacing: -0.3px;
+        color: var(--text);
+        white-space: nowrap;
+    }
+
+    .Flashcard__starDeco1 {
+        position: absolute;
+        left: 20px;
+        bottom: 16px;
+        opacity: 0.9;
+    }
+
+    .Flashcard__starDeco2,
+    .Flashcard__starDeco3 {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        opacity: 0.9;
+    }
+
+    .Flashcard__starDeco3 {
+        display: none;
+    }
+
+    &.Flashcard--questionFace .Flashcard__starDeco2,
+    &.Flashcard--answerFace .Flashcard__starDeco3 {
+        display: block;
+    }
+
+    &.Flashcard--questionFace .Flashcard__starDeco3,
+    &.Flashcard--answerFace .Flashcard__starDeco2 {
+        display: none;
+    }
+
+    .Flashcard__questionFace {
+        .Flashcard__question {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.3px;
+            line-height: 1.3;
+        }
+
+        .Flashcard__revealHintText {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text);
+            margin-top: 12px;
+        }
+    }
+
+    .Flashcard__answerFace {
+        display: none;
+
+        .Flashcard__answerLabel {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: rgb(255 255 255 / 90%);
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .Flashcard__answer {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--color-neutral-0);
+            line-height: 1.45;
+            text-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+        }
+    }
+
+    &.Flashcard--answerFace .Flashcard__questionFace,
+    &.Flashcard--questionFace .Flashcard__answerFace {
+        display: none;
+    }
+
+    &.Flashcard--questionFace .Flashcard__questionFace,
+    &.Flashcard--answerFace .Flashcard__answerFace {
+        display: block;
+    }
+}
+
+.Flashcard:hover {
+    transform: translateY(-2px);
+}
+
+/* Answer Btn / Rating */
+.AnswerRatingContainer {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow-sm);
+
+    .Answer__showAnswerBtn {
+        width: 100%;
+    }
+
+    .Rating__label {
+        display: none;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-align: center;
+        margin-bottom: 12px;
+    }
+
+    .RatingButtons {
+        display: none;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+
+        .RatingBtn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 8px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition:
+                transform 0.1s,
+                box-shadow 0.1s;
+            box-shadow: var(--shadow-sm);
+            color: var(--color-neutral-0);
+        }
+
+        .RatingBtn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0 0 var(--color-neutral-900);
+        }
+
+        .Rating__score,
+        .Rating__interval {
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.85;
+        }
+
+        .Again {
+            background: var(--color-pink-700);
+        }
+
+        .Hard {
+            background: var(--color-orange-500);
+        }
+
+        .Good {
+            background: var(--color-blue-600);
+        }
+
+        .Easy {
+            background: var(--color-green-500);
+        }
+    }
+
+    .RatingButtons.Visible {
+        display: grid;
+    }
+}
+
+/* Navigation */
+.StudyNav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .StudyNav__center {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-muted);
+    }
+
+    .StudyNav__arrow {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        border: 2px solid var(--border);
+        border-radius: 40px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+        padding: 9px 16px;
+        background: var(--card-bg);
+        cursor: pointer;
+        box-shadow: var(--shadow-sm);
+        transition: background 0.12s;
+    }
+
+    .StudyNav__arrow:hover {
+        background: var(--cream);
+    }
+
+    .StudyNav__arrow:disabled {
+        opacity: 0.4;
+        cursor: default;
+        box-shadow: none;
+    }
+}
+
+/* Stats */
+
+.StudyStats__container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.StatsPanel {
+    border: 2px solid var(--border);
+    background: var(--card-bg);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+
+    .StatsPanel__title {
+        font-size: 14px;
+        font-weight: 700;
+        border-bottom: 2px solid var(--border);
+        padding: 14px 18px;
+    }
+
+    .StatsPanel__row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1.5px solid var(--color-neutral-115);
+        padding: 14px 18px;
+
+        .StatsRow__icon {
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .StatsRow__info {
+            flex: 1;
+            margin-left: 12px;
+        }
+
+        .StatsRow__label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .StatsRow__value {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            line-height: 1.1;
+        }
+    }
+}
+
+.RatingBreakdown {
+    padding: 14px 18px;
+
+    .Breakdown__title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 10px;
+    }
+
+    .Breakdown__row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+
+    .Breakdown__label {
+        font-size: 12px;
+        font-weight: 700;
+        width: 42px;
+        flex-shrink: 0;
+
+        &.Again {
+            color: var(--color-pink-700);
+        }
+
+        &.Hard {
+            color: var(--color-orange-500);
+        }
+
+        &.Good {
+            color: var(--color-blue-600);
+        }
+
+        &.Easy {
+            color: var(--color-green-500);
+        }
+    }
+
+    .Breakdown__count {
+        font-size: 12px;
+        font-weight: 700;
+        width: 20px;
+        text-align: right;
+        flex-shrink: 0;
+        color: var(--text-muted);
+    }
+
+    .Breakdown__barTrack {
+        flex: 1;
+        height: 8px;
+    }
+
+    .Breakdown__barFill {
+        &.Again {
+            background: var(--color-pink-700);
+        }
+
+        &.Hard {
+            background: var(--color-orange-500);
+        }
+
+        &.Good {
+            background: var(--color-blue-600);
+        }
+
+        &.Easy {
+            background: var(--color-green-500);
+        }
+    }
+}
+
+.SessionCompletePanel {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    border-radius: 16px;
+    padding: 24px 20px;
+    text-align: center;
+
+    .SessionComp__emoji {
+        font-size: 40px;
+        margin-bottom: 8px;
+    }
+
+    .SessionComp__title {
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .SessionComp__message {
+        font-size: 13px;
+        color: var(--text-muted);
+        line-height: 1.5;
+        margin-bottom: 16px;
+    }
+
+    .SessionComp__doneBtn {
+        text-decoration: none;
+    }
+}
+
+@media (width <= 760px) {
+    main {
+        grid-template-columns: 1fr;
+        padding: 20px 16px 48px;
+    }
+
+    .StudyStats__container {
+        order: -1;
+    }
+
+    .StatsPanel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+        .StatsPanel__title {
+            grid-column: 1 / -1;
+        }
+
+        .StatsPanel__row {
+            padding: 12px 16px;
+        }
+    }
+
+    .AnswerRatingContainer {
+        .RatingButtons {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+}

@@ -1,0 +1,15 @@
+.ProgressBar__track {
+    width: 52px;
+    height: 5px;
+    background: #e8ddd0;
+    border-radius: 4px;
+    border: 1px solid rgb(46 20 1 / 15%);
+    overflow: hidden;
+
+    .ProgressBar__fill {
+        height: 100%;
+        border-radius: 4px;
+        background: var(--color-yellow-500);
+        transition: width 0.4s ease;
+    }
+}

@@ -125,3 +125,10 @@
         box-shadow: none;
     }
 }
+
+@media (width <= 600px) {
+    .Stats__container {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+}

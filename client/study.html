@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="./assets/images/favicon-32x32.png"
+        />
+        <link rel="stylesheet" href="./css/base.css" />
+        <link rel="stylesheet" href="./css/components/button.css" />
+        <link rel="stylesheet" href="./css/components/nav.css" />
+        <link rel="stylesheet" href="./css/components/breadcrumb.css" />
+        <link rel="stylesheet" href="./css/components/progressbar.css" />
+        <link rel="stylesheet" href="./css/pages/study.css" />
+
+        <title>Frontend Mentor | Flashcard App - Study Mode</title>
+    </head>
+    <body>
+        <nav>
+            <a href="dashboard.html">
+                <img src="./assets/images/logo-large.svg" alt="Logo" />
+            </a>
+            <div class="Nav__right">
+                <a class="Nav__btn" href="deck.html">Back To Deck</a>
+                <button class="Nav__btn Btn Logout">Log out</button>
+            </div>
+        </nav>
+        <main>
+            <!-- Breadcrumb -->
+            <section class="Breadcrumb">
+                <a href="dashboard.html">My Decks</a>
+                <span class="Breadcrumb__arrow">></span>
+                <span>Deck name</span>
+                <span class="Breadcrumb__arrow">></span>
+                <span>Study Session</span>
+            </section>
+
+            <!-- Study -->
+            <section class="StudyFlashcard__container">
+                <!-- Progress Bar -->
+                <div class="StudyProgressBar">
+                    <p class="StudyProgressBar__label">Progress</p>
+                    <div class="StudyProgressBar__track ProgressBar__track">
+                        <div
+                            class="StudyProgressBar__fill ProgressBar__fill"
+                            id="study-progress-fill"
+                        ></div>
+                    </div>
+                    <p
+                        class="StudyProgressBar__count"
+                        id="study-progress-count"
+                    >
+                        0 / 12
+                    </p>
+                </div>
+                <!-- Flashcard wrap -->
+                <div class="Flashcard__wrap">
+                    <div class="Flashcard Flashcard--questionFace">
+                        <p class="Flashcard__deckLabel">JavaScript Core</p>
+                        <!-- Star decorations -->
+                        <div class="Flashcard__starDeco1">
+                            <svg
+                                width="31"
+                                height="31"
+                                viewBox="0 0 31 31"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <g clip-path="url(#clip0_526_5159)">
+                                    <path
+                                        d="M9.50402 1.75525C13.628 9.32321 22.7366 12.6433 30.7633 9.50401C23.1953 13.628 19.8753 22.7366 23.0145 30.7633C18.8905 23.1952 9.78189 19.8753 1.75525 23.0145C9.32323 18.8905 12.6432 9.78188 9.50402 1.75525Z"
+                                        fill="#2E1401"
+                                    />
+                                    <path
+                                        d="M9.34884 2.56913C13.514 8.48505 20.9534 11.197 27.9485 9.34924C22.0331 13.5145 19.3216 20.9537 21.1693 27.9485C17.0039 22.0328 9.56418 19.3215 2.56914 21.1697C8.48532 17.0044 11.1971 9.56447 9.34884 2.56913Z"
+                                        fill="#F8CB46"
+                                        stroke="#2E1401"
+                                        stroke-width="0.481481"
+                                    />
+                                </g>
+                                <defs>
+                                    <clipPath id="clip0_526_5159">
+                                        <rect
+                                            width="31"
+                                            height="31"
+                                            fill="white"
+                                        />
+                                    </clipPath>
+                                </defs>
+                            </svg>
+                        </div>
+
+                        <div class="Flashcard__starDeco2">
+                            <svg
+                                width="24"
+                                height="25"
+                                viewBox="0 0 24 25"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M11.125 1.90723C11.4923 1.1975 12.5077 1.1975 12.875 1.90723L16.1035 8.15234C16.2685 8.47136 16.5286 8.73147 16.8477 8.89648L23.0928 12.125C23.8025 12.4923 23.8025 13.5077 23.0928 13.875L16.8477 17.1035C16.5286 17.2685 16.2685 17.5286 16.1035 17.8477L12.875 24.0928C12.5077 24.8025 11.4923 24.8025 11.125 24.0928L7.89648 17.8477C7.73147 17.5286 7.47136 17.2685 7.15234 17.1035L0.907227 13.875C0.197502 13.5077 0.1975 12.4923 0.907227 12.125L7.15234 8.89648C7.47137 8.73146 7.73146 8.47137 7.89648 8.15234L11.125 1.90723Z"
+                                    fill="#2E1401"
+                                    stroke="#2E1401"
+                                    stroke-width="0.75"
+                                />
+                                <path
+                                    d="M11.125 0.907227C11.4923 0.1975 12.5077 0.197502 12.875 0.907227L16.1035 7.15234C16.2685 7.47136 16.5286 7.73147 16.8477 7.89648L23.0928 11.125C23.8025 11.4923 23.8025 12.5077 23.0928 12.875L16.8477 16.1035C16.5286 16.2685 16.2685 16.5286 16.1035 16.8477L12.875 23.0928C12.5077 23.8025 11.4923 23.8025 11.125 23.0928L7.89648 16.8477C7.73147 16.5286 7.47136 16.2685 7.15234 16.1035L0.907227 12.875C0.197502 12.5077 0.1975 11.4923 0.907227 11.125L7.15234 7.89648C7.47137 7.73146 7.73146 7.47137 7.89648 7.15234L11.125 0.907227Z"
+                                    fill="#92ADEB"
+                                    stroke="#2E1401"
+                                    stroke-width="0.75"
+                                />
+                            </svg>
+                        </div>
+
+                        <div class="Flashcard__starDeco3">
+                            <svg
+                                width="24"
+                                height="25"
+                                viewBox="0 0 24 25"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M11.125 1.90723C11.4923 1.1975 12.5077 1.1975 12.875 1.90723L16.1035 8.15234C16.2685 8.47136 16.5286 8.73147 16.8477 8.89648L23.0928 12.125C23.8025 12.4923 23.8025 13.5077 23.0928 13.875L16.8477 17.1035C16.5286 17.2685 16.2685 17.5286 16.1035 17.8477L12.875 24.0928C12.5077 24.8025 11.4923 24.8025 11.125 24.0928L7.89648 17.8477C7.73147 17.5286 7.47136 17.2685 7.15234 17.1035L0.907227 13.875C0.197502 13.5077 0.1975 12.4923 0.907227 12.125L7.15234 8.89648C7.47137 8.73146 7.73146 8.47137 7.89648 8.15234L11.125 1.90723Z"
+                                    fill="#2E1401"
+                                    stroke="#2E1401"
+                                    stroke-width="0.75"
+                                />
+                                <path
+                                    d="M11.125 0.907227C11.4923 0.1975 12.5077 0.197502 12.875 0.907227L16.1035 7.15234C16.2685 7.47136 16.5286 7.73147 16.8477 7.89648L23.0928 11.125C23.8025 11.4923 23.8025 12.5077 23.0928 12.875L16.8477 16.1035C16.5286 16.2685 16.2685 16.5286 16.1035 16.8477L12.875 23.0928C12.5077 23.8025 11.4923 23.8025 11.125 23.0928L7.89648 16.8477C7.73147 16.5286 7.47136 16.2685 7.15234 16.1035L0.907227 12.875C0.197502 12.5077 0.1975 11.4923 0.907227 11.125L7.15234 7.89648C7.47137 7.73146 7.73146 7.47137 7.89648 7.15234L11.125 0.907227Z"
+                                    fill="#FC8AE5"
+                                    stroke="#2E1401"
+                                    stroke-width="0.75"
+                                />
+                            </svg>
+                        </div>
+
+                        <!-- Question face -->
+                        <div class="Flashcard__questionFace">
+                            <p class="Flashcard__question">
+                                What is a closure in JavaScript
+                            </p>
+                            <p class="Flashcard__revealHintText">
+                                Click to reveal answer
+                            </p>
+                        </div>
+                        <!-- Answer face; hidden initially -->
+                        <div class="Flashcard__answerFace">
+                            <p class="Flashcard__answerLabel">Answer:</p>
+                            <p class="Flashcard__answer">
+                                A function that retains access to variables from
+                                its outer (encloning) scope, even after the
+                                outer function has returned.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Answer/ating section -->
+                <div class="AnswerRatingContainer">
+                    <!-- Show answer button -->
+                    <button
+                        class="Btn Btn--primary Answer__showAnswerBtn"
+                        id="show-answer-btn"
+                        type="button"
+                        aria-label="Button to show the answer"
+                    >
+                        Show Answer
+                    </button>
+
+                    <!-- Ratings; hidden initially -->
+                    <p class="Rating__label">
+                        How well did you recall this? Rane your confidence:
+                    </p>
+                    <div class="RatingButtons Visible">
+                        <button
+                            class="RatingBtn Again"
+                            type="button"
+                            aria-label="Button for the rating: Again"
+                        >
+                            Again
+                            <span class="Rating__score">0 - Blackout</span>
+                            <span class="Rating__interval">1 day</span>
+                        </button>
+                        <button
+                            class="RatingBtn Hard"
+                            type="button"
+                            aria-label="Button for the rating: Hard"
+                        >
+                            Hard
+                            <span class="Rating__score">1-2 - Difficult</span>
+                            <span class="Rating__interval">1 day</span>
+                        </button>
+                        <button
+                            class="RatingBtn Good"
+                            type="button"
+                            aria-label="Button for the rating: Good"
+                        >
+                            Good
+                            <span class="Rating__score">3-4 - Correct</span>
+                            <span class="Rating__interval">6 days</span>
+                        </button>
+                        <button
+                            class="RatingBtn Easy"
+                            type="button"
+                            aria-label="Button for the rating: Easy"
+                        >
+                            Easy
+                            <span class="Rating__score">5 - Perfect</span>
+                            <span class="Rating__interval">11 days</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Navigation -->
+                <div class="StudyNav">
+                    <button
+                        class="StudyNav__arrow"
+                        disabled
+                        type="button"
+                        aria-label="Button to navigate to the previous card"
+                    >
+                        <svg
+                            fill="currentColor"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            width="16"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="m5.14062 7.73438 4.59376-4.625c.125-.15626.37502-.15626.53122 0l.5938.625c.1562.125.1562.375 0 .53124l-3.68752 3.71876 3.68752 3.75002c.1562.1562.1562.375 0 .5312l-.5938.625c-.1562.1563-.40622.1563-.53122 0l-4.59376-4.62498c-.15624-.15624-.15624-.375 0-.53124z"
+                            />
+                        </svg>
+                        Previous
+                    </button>
+                    <p class="StudyNav__center">Card 1 of 12</p>
+                    <button
+                        class="StudyNav__arrow"
+                        type="button"
+                        aria-label="Button to navigate to the next card"
+                    >
+                        <svg
+                            fill="currentColor"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            width="16"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="m10.8594 8.26562-4.56252 4.62498c-.15626.1563-.40626.1563-.53126 0l-.625-.625c-.15624-.1562-.15624-.375 0-.5312l3.6875-3.75002-3.6875-3.71876c-.15624-.15624-.15624-.40624 0-.53124l.625-.625c.125-.15626.375-.15626.53126 0l4.56252 4.625c.1562.15624.1562.375 0 .53124z"
+                            />
+                        </svg>
+                        Next
+                    </button>
+                </div>
+            </section>
+
+            <!-- Stats -->
+            <section class="StudyStats__container">
+                <!-- Current session stats -->
+                <div class="StatsPanel SessionStatsPanel">
+                    <p class="StatsPanel__title">Session Stats</p>
+                    <div class="StatsPanel__row">
+                        <div class="StatsRow__icon Yellow">📚</div>
+                        <div class="StatsRow__info">
+                            <p class="StatsRow__label">Total due</p>
+                            <p class="StatsRow__value">12</p>
+                        </div>
+                    </div>
+                    <div class="StatsPanel__row">
+                        <div class="StatsRow__icon Blue">✅</div>
+                        <div class="StatsRow__info">
+                            <p class="StatsRow__label">Reviewed</p>
+                            <p class="StatsRow__value">0</p>
+                        </div>
+                    </div>
+                    <div class="StatsPanel__row">
+                        <div class="StatsRow__icon Green">🎯</div>
+                        <div class="StatsRow__info">
+                            <p class="StatsRow__label">Correct (≥ Good)</p>
+                            <p class="StatsRow__value">0</p>
+                        </div>
+                    </div>
+                    <div class="StatsPanel__row">
+                        <div class="StatsRow__icon Pink">🔥</div>
+                        <div class="StatsRow__info">
+                            <p class="StatsRow__label">Day streak</p>
+                            <p class="StatsRow__value">2</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Deck overall stats -->
+                <div class="StatsPanel DeckStatsPanel">
+                    <p class="StatsPanel__title">Deck Overview</p>
+                    <div class="StatsPanel__row">
+                        <div class="StatsRow__info">
+                            <p class="StatsRow__label">Retiention rate</p>
+                            <p class="StatsRow__value">84%</p>
+                        </div>
+                    </div>
+                    <div class="StatsPanel__row">
+                        <div class="StatsRow__info">
+                            <p class="StatsRow__label">Total cards</p>
+                            <p class="StatsRow__value">20</p>
+                        </div>
+                    </div>
+                    <div class="StatsPanel__row">
+                        <div class="StatsRow__info">
+                            <p class="StatsRow__label">Due today</p>
+                            <p class="StatsRow__value">8</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Rating breakdown -->
+                <div class="StatsPanel SessionSummaryPanel">
+                    <p class="StatsPanel__title">This Session</p>
+                    <div class="RatingBreakdown">
+                        <p class="Breakdown__title">Rating Breakdown</p>
+                        <div class="Breakdown__row">
+                            <p class="Breakdown__label Again">Again</p>
+                            <div class="Breakdown__barTrack ProgressBar__track">
+                                <div
+                                    class="Breakdown__barFill ProgressBar__fill Again"
+                                    id="breakdown-fill-again"
+                                ></div>
+                            </div>
+                            <p
+                                class="Breakdown__count"
+                                id="breakdown-count-again"
+                            >
+                                0
+                            </p>
+                        </div>
+                        <div class="Breakdown__row">
+                            <p class="Breakdown__label Hard">Hard</p>
+                            <div class="Breakdown__barTrack ProgressBar__track">
+                                <div
+                                    class="Breakdown__barFill ProgressBar__fill Hard"
+                                    id="breakdown-fill-hard"
+                                ></div>
+                            </div>
+                            <p
+                                class="Breakdown__count"
+                                id="breakdown-count-hard"
+                            >
+                                0
+                            </p>
+                        </div>
+                        <div class="Breakdown__row">
+                            <p class="Breakdown__label Good">Good</p>
+                            <div class="Breakdown__barTrack ProgressBar__track">
+                                <div
+                                    class="Breakdown__barFill ProgressBar__fill Good"
+                                    id="breakdown-fill-good"
+                                ></div>
+                            </div>
+                            <p
+                                class="Breakdown__count"
+                                id="breakdown-count-good"
+                            >
+                                0
+                            </p>
+                        </div>
+                        <div class="Breakdown__row">
+                            <p class="Breakdown__label Easy">Easy</p>
+                            <div class="Breakdown__barTrack ProgressBar__track">
+                                <div
+                                    class="Breakdown__barFill ProgressBar__fill Easy"
+                                    id="breakdown-fill-easy"
+                                ></div>
+                            </div>
+                            <p
+                                class="Breakdown__count"
+                                id="breakdown-count-easy"
+                            >
+                                0
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Session complete panel; hidden initially -->
+                <div class="SessionCompletePanel">
+                    <div class="SessionComp__emoji">🎉</div>
+                    <p class="SessionComp__title">Session complete!</p>
+                    <p class="SessionComp__message">
+                        You reviewed all 12 due cards. Great work keeping the
+                        streak alive.
+                    </p>
+                    <a
+                        class="Btn Btn--primary SessionComp__doneBtn"
+                        href="deck.html"
+                        id="session-done-btn"
+                        >Back to Deck</a
+                    >
+                </div>
+            </section>
+        </main>
+    </body>
+</html>

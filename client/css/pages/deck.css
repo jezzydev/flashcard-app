@@ -34,3 +34,15 @@
         align-items: center;
     }
 }
+
+@media (width <= 700px) {
+    .Stats__container.DeckStats {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (width <= 480px) {
+    .Stats__container.DeckStats {
+        grid-template-columns: 1fr;
+    }
+}
