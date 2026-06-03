@@ -63,6 +63,16 @@
             box-shadow: var(--shadow-sm);
         }
 
+        input.isError,
+        textarea.isError {
+            border-color: var(--color-red-500);
+        }
+
+        input.isSuccess,
+        textarea.isSuccess {
+            border-color: var(--color-green-500);
+        }
+
         .TogglePassword {
             position: absolute;
             right: 14px;
@@ -93,4 +103,8 @@
     font-weight: 500;
     margin-top: 5px;
     display: none;
+}
+
+.Field__error.show {
+    display: block;
 }

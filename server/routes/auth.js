@@ -6,7 +6,7 @@ import {
     isValidUser,
 } from '../utils/userValidation.js';
 import bcrypt from 'bcrypt';
-import { AuthenticationError } from '../utils/errors.js';
+import { AuthenticationError, ERROR_CODES } from '../utils/errors.js';
 import jwt from 'jsonwebtoken';
 import {
     generateAccessToken,
@@ -70,7 +70,10 @@ router.post('/login', async (req, res, next) => {
         const result = await pool.query(query, [input.email]);
 
         if (result.rows.length === 0) {
-            throw new AuthenticationError('Invalid email or password.');
+            throw new AuthenticationError(
+                'Invalid email or password.',
+                ERROR_CODES.AUTHENTICATION_FAILED,
+            );
         }
 
         const user = result.rows[0];
@@ -80,7 +83,10 @@ router.post('/login', async (req, res, next) => {
         );
 
         if (!passwordMatched) {
-            throw new AuthenticationError('Invalid email or password.');
+            throw new AuthenticationError(
+                'Invalid email or password.',
+                ERROR_CODES.AUTHENTICATION_FAILED,
+            );
         }
 
         //generate refresh token
