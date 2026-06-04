@@ -29,61 +29,37 @@ loginForm.addEventListener('submit', async (e) => {
             window.location.replace('./dashboard.html');
             return;
         } catch (error) {
-            email.classList.remove('isSuccess');
-            pw.classList.remove('isSuccess');
-            showErrorMsg(
-                null,
-                document.getElementById('login-password-error'),
-                error.message,
-            );
+            const formError = document.getElementById('login-form-error');
+            formError.textContent = error.message;
+            formError.classList.add('show');
         }
     }
 });
 
 togglePw.addEventListener('click', () => {
-    util.togglePassword('login-password');
+    util.togglePassword('reg-password');
 });
 
 function validateEmail(input, error) {
     const valid = /^[^\s@]+@[^\s@]+.[^\s@]+$/.test(input.value);
 
     if (!valid) {
-        showErrorMsg(input, error, 'Enter a valid email address');
+        util.showErrorMsg(input, error, 'Enter a valid email address.');
         return false;
     }
 
-    clearErrorMsg(input, error);
+    util.clearErrorMsg(input, error);
     input.classList.add('isSuccess');
     return true;
 }
 
 function validatePassword(input, error) {
     if (!input.value) {
-        showErrorMsg(input, error, 'Enter password');
+        util.showErrorMsg(input, error, 'Enter password.');
         return false;
     }
 
-    clearErrorMsg(input, error);
+    util.clearErrorMsg(input, error);
     input.classList.add('isSuccess');
     return true;
-}
-
-function clearErrorMsg(input, error) {
-    if (input !== undefined && input !== null) {
-        input.classList.remove('isError');
-        input.removeAttribute('aria-invalid');
-    }
-
-    error.textContent = '';
-    error.classList.remove('show');
-}
-
-function showErrorMsg(input, error, errorMsg) {
-    if (input !== undefined && input !== null) {
-        input.classList.add('isError');
-        input.setAttribute('aria-invalid', true);
-    }
-
-    error.textContent = errorMsg;
-    error.classList.add('show');
 }

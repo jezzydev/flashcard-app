@@ -128,6 +128,14 @@
         }
     }
 
+    .Terms__row:has(input.isError) {
+        border-color: var(--color-red-500);
+    }
+
+    .Terms__row:has(input.isSuccess) {
+        border-color: var(--color-green-500);
+    }
+
     .Toast {
         display: none;
         align-items: center;
@@ -139,6 +147,10 @@
         font-weight: 600;
         color: var(--color-green-500);
         box-shadow: var(--shadow-sm);
+    }
+
+    .Toast.show {
+        display: block;
     }
 
     .LoginLink {
