@@ -66,7 +66,7 @@ router.post('/login', async (req, res, next) => {
         isValidPassword(input.password);
 
         const query =
-            'SELECT id, email, password_hash, token_version FROM users WHERE email = $1;';
+            'SELECT id, email, name, password_hash, token_version FROM users WHERE email = $1;';
         const result = await pool.query(query, [input.email]);
 
         if (result.rows.length === 0) {
@@ -93,6 +93,7 @@ router.post('/login', async (req, res, next) => {
         const payload = {
             sub: user.id,
             email: user.email,
+            name: user.name,
         };
 
         const newRefreshToken = await createNewRefreshToken(payload);
@@ -130,7 +131,7 @@ router.post('/refresh', async (req, res, next) => {
                 refreshToken,
                 process.env.REFRESH_TOKEN_SECRET,
             );
-            ({ sub: user.id, email: user.email } = decoded);
+            ({ sub: user.id, email: user.email, name: user.name } = decoded);
         } catch (error) {
             throw new AuthenticationError('Invalid or expired token.');
         }
@@ -157,6 +158,7 @@ router.post('/refresh', async (req, res, next) => {
         const payload = {
             sub: user.id,
             email: user.email,
+            name: user.name,
         };
 
         const newRefreshToken = await createNewRefreshToken(

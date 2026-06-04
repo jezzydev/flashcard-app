@@ -6,7 +6,6 @@ class ApiClient {
 
     async #request(endpoint, options = {}) {
         const url = `${this.baseUrl}${endpoint}`;
-        console.log('URL:', url);
         const headers = {
             'Content-Type': 'application/json',
             ...this.defaultHeaders,

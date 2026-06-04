@@ -19,3 +19,13 @@ export const showErrorMsg = (input, error, errorMsg) => {
     error.textContent = errorMsg;
     error.classList.add('show');
 };
+
+export const extractUserData = (accessToken) => {
+    const payload = accessToken.split('.')[1];
+    return JSON.parse(decodeFromBase64(payload));
+};
+
+export const decodeFromBase64 = (encodedStr) => {
+    const base64 = encodedStr.replace(/-/g, '+').replace(/_/, '/');
+    return atob(base64);
+};

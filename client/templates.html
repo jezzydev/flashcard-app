@@ -1,0 +1,37 @@
+<template id="deck-card-template">
+    <li class="CardItem DeckCard">
+        <a class="DeckCardLink" href="deck.html">
+            <div class="DeckCard__strip Yellow"></div>
+            <div class="CardItem__content">
+                <p class="CardItem__title"></p>
+                <p class="CardItem__sub"></p>
+            </div>
+            <div class="CardItem__footer">
+                <div class="CardItem__meta">
+                    <div class="Count__pill">
+                        <p class="Count__dot Total"></p>
+                        <p class="Count__totalCardsValue"></p>
+                    </div>
+                    <div class="Count__pill">
+                        <p class="Count__dot Due"></p>
+                        <p class="Count__dueTodayValue"></p>
+                    </div>
+                </div>
+                <p class="CardItem__chip"></p>
+            </div>
+        </a>
+        <button class="CardItem__menuBtn">
+            <svg
+                fill="currentColor"
+                height="18"
+                viewBox="0 0 24 24"
+                width="18"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    d="m12 10.3125c.9141 0 1.6875.7734 1.6875 1.6875 0 .9492-.7734 1.6875-1.6875 1.6875-.9492 0-1.6875-.7383-1.6875-1.6875 0-.9141.7383-1.6875 1.6875-1.6875zm-1.6875-3.65625c0-.91406.7383-1.6875 1.6875-1.6875.9141 0 1.6875.77344 1.6875 1.6875 0 .94922-.7734 1.6875-1.6875 1.6875-.9492 0-1.6875-.73828-1.6875-1.6875zm0 10.68755c0-.9141.7383-1.6876 1.6875-1.6876.9141 0 1.6875.7735 1.6875 1.6876 0 .9492-.7734 1.6874-1.6875 1.6874-.9492 0-1.6875-.7382-1.6875-1.6874z"
+                />
+            </svg>
+        </button>
+    </li>
+</template>

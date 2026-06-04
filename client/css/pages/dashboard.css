@@ -81,7 +81,7 @@
             background: var(--color-yellow-500);
         }
 
-        .DeckCard__dueBadge {
+        /* .DeckCard__dueBadge {
             border: 1.5px solid var(--border);
             border-radius: 20px;
             background: var(--color-yellow-500);
@@ -90,7 +90,7 @@
             font-weight: 700;
             color: var(--text);
             white-space: nowrap;
-        }
+        } */
     }
 
     .DeckCard--addDeck {

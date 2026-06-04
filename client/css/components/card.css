@@ -17,6 +17,11 @@
         list-style: none;
     }
 
+    .CardList__error {
+        color: var(--color-red-500);
+        margin-bottom: 10px;
+    }
+
     .CardItem {
         display: flex;
         flex-direction: column;

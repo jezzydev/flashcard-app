@@ -6,15 +6,58 @@ import { ValidationError } from '../utils/errors.js';
 
 const router = express.Router();
 
+//Get total stats
+router.get('/stats', async (req, res, next) => {
+    try {
+        const user = req.user;
+        const cardResult = await pool.query(
+            `SELECT count(distinct d.id) as total_decks, 
+                COUNT(distinct c.id) FILTER(WHERE c.due_date <= now()) as due_today
+            FROM cards c
+            INNER JOIN decks d ON d.id = c.deck_id
+            WHERE d.user_id = $1
+            GROUP BY d.user_id; `,
+            [user.sub],
+        );
+
+        if (cardResult.rows.length === 0) {
+            return res.status(400).json({ message: 'User not found.' });
+        }
+
+        const streakResult = await pool.query(
+            `SELECT distinct DATE(started_at) as study_date
+            FROM study_sessions 
+            WHERE user_id = $1
+            ORDER BY study_date DESC;`,
+            [user.sub],
+        );
+
+        let streak = calculateStreak(streakResult.rows);
+
+        res.json({
+            stats: {
+                total_decks: cardResult.rows[0].total_decks,
+                due_today: cardResult.rows[0].due_today,
+                streak: streak,
+            },
+        });
+        res.json(result.rows);
+    } catch (error) {
+        next(error);
+    }
+});
+
 //Get all decks for authenticated user
 router.get('/', async (req, res, next) => {
     try {
         const user = req.user;
         const result = await pool.query(
-            `SELECT id, name, description, created_at 
-            FROM decks 
-            WHERE user_id = $1 
-            ORDER BY created_at, id;`,
+            `SELECT d.id, d.name, d.description, d.created_at, count(distinct c.id) as total_cards, count(distinct c.id) filter (where c.due_date <= now()) as due_today 
+            FROM decks d 
+            INNER JOIN cards c ON c.deck_id = d.id 
+            WHERE d.user_id = $1 
+            GROUP BY d.id
+            ORDER BY d.created_at, d.id;`,
             [user.sub],
         );
 
@@ -66,7 +109,7 @@ router.get('/:id/study', async (req, res, next) => {
     }
 });
 
-//Get deck stats: total cards, due today, retention rate, streak
+//Get stats of deck: total cards, due today, retention rate, streak
 router.get('/:id/stats', async (req, res, next) => {
     try {
         const user = req.user;
@@ -97,32 +140,25 @@ router.get('/:id/stats', async (req, res, next) => {
             [deckId, user.sub],
         );
 
-        const isSameDay = (d1, d2) => {
-            return (
-                d1.getFullYear() === d2.getFullYear() &&
-                d1.getMonth() === d2.getMonth() &&
-                d1.getDate() === d2.getDate()
-            );
-        };
+        const streak = calculateStreak(streakResult.rows);
+        // let streak = 0;
+        // if (streakResult.rows.length > 0) {
+        //     const studyDates = streakResult.rows;
+        //     let anchor = new Date();
 
-        let streak = 0;
-        if (streakResult.rows.length > 0) {
-            const studyDates = streakResult.rows;
-            let anchor = new Date();
+        //     if (!isSameDay(new Date(studyDates[0].study_date), anchor)) {
+        //         anchor.setDate(anchor.getDate() - 1); //set anchor to yesterday if user has not yet studied today
+        //     }
 
-            if (!isSameDay(new Date(studyDates[0].study_date), anchor)) {
-                anchor.setDate(anchor.getDate() - 1); //set anchor to yesterday if user has not yet studied today
-            }
-
-            for (let i = 0; i <= studyDates.length - 1; i++) {
-                if (isSameDay(new Date(studyDates[i].study_date), anchor)) {
-                    streak++;
-                    anchor.setDate(anchor.getDate() - 1);
-                } else {
-                    break;
-                }
-            }
-        }
+        //     for (let i = 0; i <= studyDates.length - 1; i++) {
+        //         if (isSameDay(new Date(studyDates[i].study_date), anchor)) {
+        //             streak++;
+        //             anchor.setDate(anchor.getDate() - 1);
+        //         } else {
+        //             break;
+        //         }
+        //     }
+        // }
 
         res.json({
             stats: {
@@ -131,8 +167,8 @@ router.get('/:id/stats', async (req, res, next) => {
                 retention_rate: Number(
                     cardResult.rows[0].retention_rate,
                 ).toFixed(2),
+                streak: streak,
             },
-            streak: streak,
         });
     } catch (error) {
         next(error);
@@ -271,5 +307,36 @@ router.delete('/:id', async (req, res, next) => {
         next(error);
     }
 });
+
+function calculateStreak(studyDates) {
+    let streak = 0;
+
+    if (studyDates.length > 0) {
+        let anchor = new Date();
+
+        const isSameDay = (d1, d2) => {
+            return (
+                d1.getFullYear() === d2.getFullYear() &&
+                d1.getMonth() === d2.getMonth() &&
+                d1.getDate() === d2.getDate()
+            );
+        };
+
+        if (!isSameDay(new Date(studyDates[0].study_date), anchor)) {
+            anchor.setDate(anchor.getDate() - 1); //set anchor to yesterday if user has not yet studied today
+        }
+
+        for (let i = 0; i <= studyDates.length - 1; i++) {
+            if (isSameDay(new Date(studyDates[i].study_date), anchor)) {
+                streak++;
+                anchor.setDate(anchor.getDate() - 1);
+            } else {
+                break;
+            }
+        }
+    }
+
+    return streak;
+}
 
 export default router;
