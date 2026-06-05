@@ -27,7 +27,7 @@ class AuthenticationError extends ErrorBase {
 }
 
 class AuthorizationError extends ErrorBase {
-    constructor(message, errorCode = ERROR_CODES.INVALID_TOKEN) {
+    constructor(message, errorCode = ERROR_CODES.UNAUTHORIZED_ACCESS) {
         super(message, errorCode, 403);
     }
 }

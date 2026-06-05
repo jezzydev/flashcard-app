@@ -2,13 +2,13 @@ const authState = {
     accessToken: null,
 };
 
-export const setToken = (token) => {
+export const setAccessToken = (token) => {
     authState.accessToken = token;
 };
 
-export const getToken = () => authState.accessToken;
+export const getAccessToken = () => authState.accessToken;
 
-export const clearToken = () => {
+export const clearAccessToken = () => {
     authState.accessToken = null;
 };
 

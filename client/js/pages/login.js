@@ -17,27 +17,37 @@ loginForm.addEventListener('submit', async (e) => {
     const isValidEmail = validateEmail(email, emailError);
     const isValidPassword = validatePassword(pw, pwError);
 
-    //submit form
-    if (isValidEmail && isValidPassword) {
-        try {
-            const data = await api.post('/api/auth/login', {
-                email: email.value,
-                password: pw.value,
-            });
+    if (!isValidEmail || !isValidPassword) return;
 
-            auth.setToken(data.access_token);
-            window.location.replace('./dashboard.html');
-            return;
-        } catch (error) {
+    //submit form
+    try {
+        const res = await api.post('/api/auth/login', {
+            email: email.value,
+            password: pw.value,
+        });
+
+        if (!res.ok) {
+            const resError = await res.json();
             const formError = document.getElementById('login-form-error');
-            formError.textContent = error.message;
+            formError.textContent = resError.message;
             formError.classList.add('show');
+            return;
         }
+
+        const data = await res.json();
+        auth.setAccessToken(data.access_token);
+        window.location.replace('./dashboard.html');
+        return;
+    } catch (error) {
+        console.error(`Fetch error: ${error}`);
+        const formError = document.getElementById('login-form-error');
+        formError.textContent = 'Unable to login.';
+        formError.classList.add('show');
     }
 });
 
 togglePw.addEventListener('click', () => {
-    util.togglePassword('reg-password');
+    util.togglePassword('login-password');
 });
 
 function validateEmail(input, error) {

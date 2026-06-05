@@ -40,7 +40,7 @@
                         <span class="Header__username">username</span>
                     </p>
                 </div>
-                <button class="Btn Btn--primary">
+                <button class="Btn Btn--primary" id="add-deck-btn">
                     <svg
                         width="16"
                         height="16"
@@ -61,21 +61,21 @@
                 <div class="Stats__card">
                     <div class="Stats__icon Yellow">📚</div>
                     <div class="Stats__info">
-                        <p class="Stats__num DashboardStats__totalDecks">40</p>
+                        <p class="Stats__num DashboardStats__totalDecks"></p>
                         <p class="Stats__label">Total decks</p>
                     </div>
                 </div>
                 <div class="Stats__card">
                     <div class="Stats__icon Blue">⏰</div>
                     <div class="Stats__info">
-                        <p class="Stats__num DashboardStats__cardsDue">20</p>
+                        <p class="Stats__num DashboardStats__cardsDue"></p>
                         <p class="Stats__label">Cards due today</p>
                     </div>
                 </div>
                 <div class="Stats__card">
                     <div class="Stats__icon Pink">🔥</div>
                     <div class="Stats__info">
-                        <p class="Stats__num DashboardStats__dayStreak">7</p>
+                        <p class="Stats__num DashboardStats__dayStreak"></p>
                         <p class="Stats__label">Day streak</p>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                 <h2 class="Section__label">Your Decks</h2>
                 <ul class="CardsList DeckGrid">
                     <!-- Add new deck -->
-                    <li class="CardItem DeckCard DeckCard--addDeck">
+                    <li class="CardItem DeckCard--addDeck">
                         <button
                             class="DeckCard__addDeckBtn"
                             type="button"
@@ -111,7 +111,7 @@
             </section>
         </main>
         <!-- New deck modal -->
-        <div class="Modal__overlay">
+        <div class="Modal__overlay" id="add-modal">
             <div class="Modal">
                 <h3 class="Modal__title">Create new deck</h3>
                 <button
@@ -121,7 +121,11 @@
                 >
                     ✕
                 </button>
-                <form class="Form ModalForm CreateDeckForm">
+                <form
+                    class="Form ModalForm CreateDeckForm"
+                    method="POST"
+                    novalidate
+                >
                     <div class="Field">
                         <label for="add-deck-name">Deck name</label>
                         <div class="Field__inputWrap">
@@ -131,9 +135,10 @@
                                 placeholder="e.g. Japanese N3 Vocabulary"
                             />
                         </div>
-                        <div class="Field__error" id="add-deck-name-error">
-                            Required
-                        </div>
+                        <div
+                            class="Field__error"
+                            id="add-deck-name-error"
+                        ></div>
                     </div>
                     <div class="Field">
                         <label for="add-deck-description"
@@ -150,10 +155,18 @@
                         </div>
                     </div>
                     <div class="Modal__actions">
-                        <button class="Btn Btn--cancel" type="button">
+                        <button
+                            class="Btn Btn--cancel"
+                            type="button"
+                            id="add-deck-cancel-btn"
+                        >
                             Cancel
                         </button>
-                        <button class="Btn Btn--submit" type="submit">
+                        <button
+                            class="Btn Btn--submit"
+                            type="submit"
+                            id="add-deck-submit-btn"
+                        >
                             Create deck
                         </button>
                     </div>
@@ -207,7 +220,11 @@
                         >
                             Cancel
                         </button>
-                        <button class="Btn Btn--submit" type="submit">
+                        <button
+                            class="Btn Btn--submit"
+                            type="submit"
+                            id="edit-deck-submit-btn"
+                        >
                             Update deck
                         </button>
                     </div>

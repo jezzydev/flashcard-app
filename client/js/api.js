@@ -1,3 +1,4 @@
+import * as auth from './auth.js';
 class ApiClient {
     constructor(baseUrl, defaultHeaders = {}) {
         this.baseUrl = baseUrl;
@@ -6,10 +7,12 @@ class ApiClient {
 
     async #request(endpoint, options = {}) {
         const url = `${this.baseUrl}${endpoint}`;
+        const token = auth.getAccessToken();
         const headers = {
             'Content-Type': 'application/json',
             ...this.defaultHeaders,
             ...options.headers,
+            Authorization: `Bearer ${token}`,
         };
 
         const config = {
@@ -22,29 +25,30 @@ class ApiClient {
             config.body = JSON.stringify(config.body);
         }
 
-        try {
-            const response = await fetch(url, config);
+        let res = await fetch(url, config);
 
-            //Handle 204 - No content
-            if (response.status === 204) {
-                return null;
+        //silent refresh
+        if (res.status === 401) {
+            const newToken = await this.tryRefresh();
+
+            if (!newToken) {
+                window.location.replace('./index.html');
+                return;
             }
 
-            //Parse JSON response
-            const data = await response.json();
+            auth.setAccessToken(newToken);
 
-            //Parse JSON response
-            if (!response.ok) {
-                throw new Error(
-                    data.message || `HTTP Error! Status: ${response.status}`,
-                );
-            }
-
-            return data;
-        } catch (error) {
-            console.error(`Fetch error: ${error}`);
-            throw error;
+            //retry original request with the new access token
+            return fetch(url, {
+                ...options,
+                headers: {
+                    ...headers,
+                    Authorization: `Bearer ${newToken}`,
+                },
+            });
         }
+
+        return res;
     }
 
     get(endpoint, headers) {
@@ -61,6 +65,22 @@ class ApiClient {
 
     delete(endpoint, headers) {
         return this.#request(endpoint, { method: 'DELETE', headers });
+    }
+
+    async tryRefresh() {
+        try {
+            const res = await fetch(`${this.baseUrl}/api/auth/refresh`, {
+                method: 'POST',
+                credentials: 'include',
+            });
+
+            if (!res) return null;
+
+            const data = await res.json();
+            return data.access_token;
+        } catch (error) {
+            return null;
+        }
     }
 }
 

@@ -13,8 +13,8 @@ router.get('/stats', async (req, res, next) => {
         const cardResult = await pool.query(
             `SELECT count(distinct d.id) as total_decks, 
                 COUNT(distinct c.id) FILTER(WHERE c.due_date <= now()) as due_today
-            FROM cards c
-            INNER JOIN decks d ON d.id = c.deck_id
+            FROM decks d
+            LEFT JOIN cards c ON d.id = c.deck_id
             WHERE d.user_id = $1
             GROUP BY d.user_id; `,
             [user.sub],
@@ -32,7 +32,7 @@ router.get('/stats', async (req, res, next) => {
             [user.sub],
         );
 
-        let streak = calculateStreak(streakResult.rows);
+        const streak = calculateStreak(streakResult.rows);
 
         res.json({
             stats: {
@@ -41,7 +41,6 @@ router.get('/stats', async (req, res, next) => {
                 streak: streak,
             },
         });
-        res.json(result.rows);
     } catch (error) {
         next(error);
     }
@@ -52,12 +51,12 @@ router.get('/', async (req, res, next) => {
     try {
         const user = req.user;
         const result = await pool.query(
-            `SELECT d.id, d.name, d.description, d.created_at, count(distinct c.id) as total_cards, count(distinct c.id) filter (where c.due_date <= now()) as due_today 
+            `SELECT d.id, d.name, d.description, d.created_at, COUNT(distinct c.id) as total_cards, COUNT(distinct c.id) FILTER(WHERE c.due_date <= now()) as due_today
             FROM decks d 
-            INNER JOIN cards c ON c.deck_id = d.id 
+            LEFT JOIN cards c ON c.deck_id = d.id
             WHERE d.user_id = $1 
             GROUP BY d.id
-            ORDER BY d.created_at, d.id;`,
+            ORDER BY d.created_at, d.name;`,
             [user.sub],
         );
 
@@ -141,24 +140,6 @@ router.get('/:id/stats', async (req, res, next) => {
         );
 
         const streak = calculateStreak(streakResult.rows);
-        // let streak = 0;
-        // if (streakResult.rows.length > 0) {
-        //     const studyDates = streakResult.rows;
-        //     let anchor = new Date();
-
-        //     if (!isSameDay(new Date(studyDates[0].study_date), anchor)) {
-        //         anchor.setDate(anchor.getDate() - 1); //set anchor to yesterday if user has not yet studied today
-        //     }
-
-        //     for (let i = 0; i <= studyDates.length - 1; i++) {
-        //         if (isSameDay(new Date(studyDates[i].study_date), anchor)) {
-        //             streak++;
-        //             anchor.setDate(anchor.getDate() - 1);
-        //         } else {
-        //             break;
-        //         }
-        //     }
-        // }
 
         res.json({
             stats: {

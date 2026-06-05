@@ -7,7 +7,10 @@ export const authenticateToken = async (req, res, next) => {
         const token = req.get('Authorization')?.split(' ')[1];
 
         if (!token) {
-            throw new AuthenticationError('Missing access token.');
+            throw new AuthenticationError(
+                'Missing access token.',
+                ERROR_CODES.AUTHENTICATION_FAILED,
+            );
         }
 
         let user;

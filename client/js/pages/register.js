@@ -39,12 +39,21 @@ regForm.addEventListener('submit', async (e) => {
         isValidTerms
     ) {
         try {
-            const data = await api.post('/api/auth/register', {
+            const res = await api.post('/api/auth/register', {
                 name: name.value,
                 email: email.value,
                 password: pw.value,
                 terms: terms.checked,
             });
+
+            if (!res.ok) {
+                const resError = await res.json();
+                const formError = document.getElementById('reg-form-error');
+                formError.textContent = error.message;
+                formError.classList.add('show');
+            }
+
+            const data = await res.json();
 
             //update toast message and redirect to login page after 2 sec
             if (data.user) {
@@ -56,8 +65,9 @@ regForm.addEventListener('submit', async (e) => {
                 }, 2000);
             }
         } catch (error) {
+            console.error(`Fetch error: ${error}`);
             const formError = document.getElementById('reg-form-error');
-            formError.textContent = error.message;
+            formError.textContent = 'Registration failed.';
             formError.classList.add('show');
         }
     }
