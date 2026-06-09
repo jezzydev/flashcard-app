@@ -29,3 +29,11 @@ export const decodeFromBase64 = (encodedStr) => {
     const base64 = encodedStr.replace(/-/g, '+').replace(/_/, '/');
     return atob(base64);
 };
+
+export const fetchTemplate = async (templateFilename, templateId) => {
+    const response = await fetch(templateFilename);
+    const htmlText = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlText, 'text/html');
+    return doc.getElementById(templateId);
+};

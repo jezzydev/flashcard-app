@@ -1,156 +1,23 @@
 import * as auth from '../auth.js';
+import { requireAuth } from '../auth-init.js';
 import api from '../api.js';
 import * as util from '../utils.js';
 
 async function init() {
-    document.body.style.visibility = 'hidden';
+    const token = await requireAuth();
 
-    if (!auth.isLoggedIn()) {
-        const newToken = await api.tryRefresh();
-        if (!newToken) {
-            window.location.replace('./index.html');
-            return;
-        }
-
-        auth.setAccessToken(newToken);
-    }
+    if (!token) return; //redirect already fired, bail out
 
     //load page content
-    document.body.style.visibility = 'visible';
-    const user = util.extractUserData(auth.getAccessToken());
+    const user = util.extractUserData(token);
     const username = document.querySelector('.Header__username');
     username.textContent = user.name;
 
-    //update stats
-    await updateStats();
-
-    //load decks
+    await loadStats();
     await loadDecks();
 }
 
-async function loadDecks() {
-    try {
-        const res = await api.get('/api/decks');
-
-        if (!res.ok) {
-            const resError = await res.json();
-            console.error(
-                resError.message || `HTTP Error! Status: ${res.status}`,
-            );
-            showDecksError();
-            return;
-        }
-
-        const decks = await res.json();
-
-        //render decks
-        const addDeck = document.querySelector('.DeckCard--addDeck');
-        const response = await fetch('templates.html');
-        const htmlText = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlText, 'text/html');
-        const deckCardTemplate = doc.getElementById('deck-card-template');
-
-        decks.forEach((deck) => {
-            const fragment = createDeckCardItem(deck, deckCardTemplate);
-            //add each deck before the addDeck card
-            addDeck.before(fragment);
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.CardItem')) {
-                document.querySelectorAll('.DropdownMenu.Open').forEach((m) => {
-                    m.classList.remove('Open');
-                });
-            }
-        });
-    } catch (error) {
-        console.error(`Fetch error: ${error}`);
-        showDecksError();
-    }
-}
-
-function createDeckCardItem(deck, template) {
-    const fragment = template.content.cloneNode(true);
-    const card = fragment.querySelector('.CardItem');
-    card.dataset.id = deck.id;
-
-    const link = card.querySelector('a.DeckCardLink');
-    link.href = `deck.html?id=${deck.id}`;
-
-    const title = card.querySelector('.CardItem__title');
-    title.textContent = deck.name;
-
-    const desc = card.querySelector('.CardItem__sub');
-    desc.textContent = deck.description;
-
-    const cardsCount = card.querySelector(
-        '.CardItem__meta .Count__totalCardsValue',
-    );
-    cardsCount.textContent = `${deck.total_cards} cards`;
-
-    const cardsDue = card.querySelector(
-        '.CardItem__meta .Count__dueTodayValue',
-    );
-    cardsDue.textContent = `${deck.due_today} due`;
-
-    const chip = card.querySelector('.CardItem__chip');
-    chip.textContent = `${deck.due_today} due`;
-
-    const status = deck.due_today / deck.total_cards;
-
-    if (status > 0.7) {
-        chip.classList.add('High');
-    } else if (status > 0.4) {
-        chip.classList.add('Med');
-    } else {
-        chip.classList.add('Low');
-    }
-
-    const menuBtn = card.querySelector('.CardItem__menuBtn');
-    menuBtn.addEventListener('click', (e) => {
-        //prevent click from immediately  bubbling to the document
-        e.stopPropagation();
-
-        const menu = card.querySelector('.DropdownMenu');
-
-        //close all other open menus first
-        document.querySelectorAll('.DropdownMenu.Open').forEach((m) => {
-            if (m !== menu) m.classList.remove('Open');
-        });
-
-        menu.classList.toggle('Open');
-    });
-
-    const editBtn = card.querySelector('.DropdownItem--editBtn');
-    editBtn.addEventListener('click', () => {
-        closeDropdownMenu(card);
-        openEditDeckModal(card);
-    });
-
-    const deleteBtn = card.querySelector('.DropdownItem--deleteBtn');
-    deleteBtn.addEventListener('click', () => {
-        closeDropdownMenu(card);
-        openDeleteDeckModal(card);
-    });
-
-    return fragment;
-}
-
-function clearDecks() {
-    const decks = document.querySelectorAll('.DeckGrid .DeckCard');
-    decks.forEach((li) => li.remove());
-}
-
-function showDecksError() {
-    const deckGrid = document.querySelector('.DeckGrid');
-    const deckError = document.createElement('p');
-    deckError.classList.add('CardList__error');
-    deckError.textContent = 'Failed to load decks.';
-    deckGrid.before(deckError);
-}
-
-async function updateStats() {
+async function loadStats() {
     const totalDecks = document.querySelector('.DashboardStats__totalDecks');
     const cardsDue = document.querySelector('.DashboardStats__cardsDue');
     const dayStreak = document.querySelector('.DashboardStats__dayStreak');
@@ -173,12 +40,141 @@ async function updateStats() {
         totalDecks.textContent = data.stats.total_decks;
         cardsDue.textContent = data.stats.due_today;
         dayStreak.textContent = data.stats.streak;
+
+        document.querySelector('.Page__loading').hidden = true;
+        document.querySelector('.Page__content').hidden = false;
     } catch (error) {
         console.error(`Fetch error: ${error}`);
+        document.querySelector('.Page__loading').hidden = true;
         totalDecks.textContent = '--';
         cardsDue.textContent = '--';
         dayStreak.textContent = '--';
     }
+}
+
+async function loadDecks() {
+    try {
+        const res = await api.get('/api/decks');
+
+        if (!res.ok) {
+            const resError = await res.json();
+            console.error(
+                resError.message || `HTTP Error! Status: ${res.status}`,
+            );
+            showDecksSectionError(resError.message);
+            return;
+        }
+
+        const decks = await res.json();
+
+        //render decks
+        const addDeck = document.querySelector('.DeckCard--addDeck');
+        const deckCardTemplate = await util.fetchTemplate(
+            'templates.html',
+            'deck-card-template',
+        );
+
+        decks.forEach((deck) => {
+            const fragment = createDeckCardItem(deck, deckCardTemplate);
+            //add each deck before the addDeck card
+            addDeck.before(fragment);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.CardItem')) {
+                document.querySelectorAll('.DropdownMenu.Open').forEach((m) => {
+                    m.classList.remove('Open');
+                });
+            }
+        });
+    } catch (error) {
+        console.error(`Fetch error: ${error}`);
+        showDecksSectionError(
+            'Something went wrong loading the decks. Check your connection and try again.',
+        );
+    }
+}
+
+function createDeckCardItem(deck, template) {
+    const fragment = template.content.cloneNode(true);
+    const cardItem = fragment.querySelector('.CardItem');
+    cardItem.dataset.id = deck.id;
+
+    const link = cardItem.querySelector('a.DeckCardLink');
+    link.href = `deck.html?id=${deck.id}`;
+
+    const title = cardItem.querySelector('.CardItem__title');
+    title.textContent = deck.name;
+
+    const desc = cardItem.querySelector('.CardItem__sub');
+    desc.textContent = deck.description;
+
+    const cardsCount = cardItem.querySelector(
+        '.CardItem__meta .Count__totalCardsValue',
+    );
+    cardsCount.textContent = `${deck.total_cards} cards`;
+
+    const cardsDue = cardItem.querySelector(
+        '.CardItem__meta .Count__dueTodayValue',
+    );
+    cardsDue.textContent = `${deck.due_today} due`;
+
+    const chip = cardItem.querySelector('.CardItem__chip');
+    chip.textContent = `${deck.due_today} due`;
+
+    const status = deck.due_today / deck.total_cards;
+
+    if (status > 0.7) {
+        chip.classList.add('High');
+    } else if (status > 0.4) {
+        chip.classList.add('Med');
+    } else {
+        chip.classList.add('Low');
+    }
+
+    const menuBtn = cardItem.querySelector('.CardItem__menuBtn');
+    menuBtn.addEventListener('click', (e) => {
+        //prevent click from immediately  bubbling to the document
+        e.stopPropagation();
+
+        const menu = cardItem.querySelector('.DropdownMenu');
+
+        //close all other open menus first
+        document.querySelectorAll('.DropdownMenu.Open').forEach((m) => {
+            if (m !== menu) m.classList.remove('Open');
+        });
+
+        menu.classList.toggle('Open');
+    });
+
+    const editBtn = cardItem.querySelector('.DropdownItem--editBtn');
+    editBtn.addEventListener('click', () => {
+        closeDropdownMenu(cardItem);
+        openEditDeckModal(cardItem);
+    });
+
+    const deleteBtn = cardItem.querySelector('.DropdownItem--deleteBtn');
+    deleteBtn.addEventListener('click', () => {
+        closeDropdownMenu(cardItem);
+        openDeleteDeckModal(cardItem);
+    });
+
+    return fragment;
+}
+
+function clearDecks() {
+    const decks = document.querySelectorAll('.DeckGrid .DeckCard');
+    decks.forEach((li) => li.remove());
+}
+
+function showDecksSectionError(msg) {
+    const deckGrid = document.querySelector('.DeckGrid');
+    const div = document.createElement('div');
+    const decksError = document.createElement('p');
+    decksError.classList.add('CardList__error');
+    decksError.textContent = msg;
+    div.append(decksError);
+    deckGrid.before(div);
 }
 
 //Add Deck Modal
@@ -216,7 +212,7 @@ addDeckSubmitBtn.addEventListener('click', async (e) => {
             //close modal and reload decks list
             closeModalParent(addDeckSubmitBtn);
 
-            await updateStats();
+            await loadStats();
             clearDecks();
             await loadDecks();
         } catch (error) {
@@ -272,7 +268,7 @@ editDeckSubmitBtn.addEventListener('click', async (e) => {
             //close modal and reload decks list
             closeModalParent(editDeckSubmitBtn);
 
-            await updateStats();
+            await loadStats();
             clearDecks();
             await loadDecks();
         } catch (error) {
@@ -325,7 +321,7 @@ deleteDeckConfBtn.addEventListener('click', async (e) => {
         //close modal and reload decks list
         closeModalParent(deleteDeckConfBtn);
 
-        await updateStats();
+        await loadStats();
         clearDecks();
         await loadDecks();
     } catch (error) {
@@ -373,6 +369,16 @@ function validateDeckName(input, error) {
     util.clearErrorMsg(input, error);
     input.classList.add('isSuccess');
     return true;
+}
+
+function showPageError(msg) {
+    document.querySelector('.Page__content').hidden = true;
+
+    const pageError = document.getElementById('dashboard-page-error');
+    pageError.hidden = false;
+
+    const errorMsg = document.querySelector('.PageError__message');
+    errorMsg.textContent = msg;
 }
 
 //Modal close and cancel buttons

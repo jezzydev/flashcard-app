@@ -32,84 +32,99 @@
             </div>
         </nav>
         <main>
-            <section class="Page__header">
-                <div>
-                    <h1>My Decks</h1>
-                    <p>
-                        Welcome back,
-                        <span class="Header__username">username</span>
-                    </p>
-                </div>
-                <button class="Btn Btn--primary" id="add-deck-btn">
-                    <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                    New Deck
-                </button>
-            </section>
-            <section class="Stats__container DashboardStats">
-                <div class="Stats__card">
-                    <div class="Stats__icon Yellow">📚</div>
-                    <div class="Stats__info">
-                        <p class="Stats__num DashboardStats__totalDecks"></p>
-                        <p class="Stats__label">Total decks</p>
+            <div class="Page__loading">Loading...</div>
+
+            <div class="Page__content" hidden>
+                <section class="Page__header">
+                    <div>
+                        <h1>My Decks</h1>
+                        <p>
+                            Welcome back,
+                            <span class="Header__username">username</span>
+                        </p>
                     </div>
-                </div>
-                <div class="Stats__card">
-                    <div class="Stats__icon Blue">⏰</div>
-                    <div class="Stats__info">
-                        <p class="Stats__num DashboardStats__cardsDue"></p>
-                        <p class="Stats__label">Cards due today</p>
-                    </div>
-                </div>
-                <div class="Stats__card">
-                    <div class="Stats__icon Pink">🔥</div>
-                    <div class="Stats__info">
-                        <p class="Stats__num DashboardStats__dayStreak"></p>
-                        <p class="Stats__label">Day streak</p>
-                    </div>
-                </div>
-            </section>
-            <!-- Decks list -->
-            <section class="CardsListSection">
-                <h2 class="Section__label">Your Decks</h2>
-                <ul class="CardsList DeckGrid">
-                    <!-- Add new deck -->
-                    <li class="CardItem DeckCard--addDeck">
-                        <button
-                            class="DeckCard__addDeckBtn"
-                            type="button"
-                            aria-label="Create new deck button"
+                    <button class="Btn Btn--primary" id="add-deck-btn">
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
                         >
-                            <svg
-                                width="22"
-                                height="22"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        New Deck
+                    </button>
+                </section>
+                <section class="Stats__container DashboardStats">
+                    <div class="Stats__card">
+                        <div class="Stats__icon Yellow">📚</div>
+                        <div class="Stats__info">
+                            <p
+                                class="Stats__num DashboardStats__totalDecks"
+                            ></p>
+                            <p class="Stats__label">Total decks</p>
+                        </div>
+                    </div>
+                    <div class="Stats__card">
+                        <div class="Stats__icon Blue">⏰</div>
+                        <div class="Stats__info">
+                            <p class="Stats__num DashboardStats__cardsDue"></p>
+                            <p class="Stats__label">Cards due today</p>
+                        </div>
+                    </div>
+                    <div class="Stats__card">
+                        <div class="Stats__icon Pink">🔥</div>
+                        <div class="Stats__info">
+                            <p class="Stats__num DashboardStats__dayStreak"></p>
+                            <p class="Stats__label">Day streak</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Decks list -->
+                <section class="CardsListSection">
+                    <h2 class="Section__label">Your Decks</h2>
+                    <ul class="CardsList DeckGrid">
+                        <!-- Add new deck -->
+                        <li class="CardItem DeckCard--addDeck">
+                            <button
+                                class="DeckCard__addDeckBtn"
+                                type="button"
+                                aria-label="Create new deck button"
                             >
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg>
-                            Create new deck
-                        </button>
-                    </li>
-                </ul>
-            </section>
+                                <svg
+                                    width="22"
+                                    height="22"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                Create new deck
+                            </button>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+
+            <!-- Page Error -->
+            <div class="Page__errorState" id="dashboard-page-error" hidden>
+                <div class="PageError__icon">⚠️</div>
+                <h2 class="PageError__title">Could not load the dashboard</h2>
+                <p class="PageError__message"></p>
+            </div>
         </main>
+
         <!-- New deck modal -->
         <div class="Modal__overlay" id="add-modal">
             <div class="Modal">

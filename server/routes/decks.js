@@ -163,7 +163,7 @@ router.get('/:id', async (req, res, next) => {
         isValidDeckId(deckId);
 
         const result = await pool.query(
-            `SELECT d.id, d.name, d.description, d.created_at, count(c.id) as card_count, count(c.id) FILTER (WHERE c.due_date <= now()) as due_count 
+            `SELECT d.id, d.name, d.description, d.created_at, count(c.id) as total_cards, count(c.id) FILTER (WHERE c.due_date <= now()) as due_today 
             FROM decks d 
             LEFT JOIN cards c ON d.id = c.deck_id 
             WHERE d.id = $1 
