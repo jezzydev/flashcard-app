@@ -52,65 +52,89 @@ async function loadDecks() {
         const deckCardTemplate = doc.getElementById('deck-card-template');
 
         decks.forEach((deck) => {
-            const fragment = deckCardTemplate.content.cloneNode(true);
-            const card = fragment.querySelector('.CardItem');
-            card.dataset.id = deck.id;
-
-            const title = card.querySelector('.CardItem__title');
-            title.textContent = deck.name;
-
-            const desc = card.querySelector('.CardItem__sub');
-            desc.textContent = deck.description;
-
-            const cardsCount = card.querySelector(
-                '.CardItem__meta .Count__totalCardsValue',
-            );
-            cardsCount.textContent = `${deck.total_cards} cards`;
-
-            const cardsDue = card.querySelector(
-                '.CardItem__meta .Count__dueTodayValue',
-            );
-            cardsDue.textContent = `${deck.due_today} due`;
-
-            const chip = card.querySelector('.CardItem__chip');
-            chip.textContent = `${deck.due_today} due`;
-
-            const status = deck.due_today / deck.total_cards;
-
-            if (status > 0.7) {
-                chip.classList.add('High');
-            } else if (status > 0.4) {
-                chip.classList.add('Med');
-            } else {
-                chip.classList.add('Low');
-            }
-
-            const menuBtn = card.querySelector('.CardItem__menuBtn');
-            menuBtn.addEventListener('click', () => {
-                const menu = card.querySelector('.DropdownMenu');
-                menu.classList.add('Open');
-            });
-
-            //TODO: close menu if user clicked outside
-
-            const editBtn = card.querySelector('.DropdownItem--editBtn');
-            editBtn.addEventListener('click', () => {
-                closeDropdownMenu(card);
-                openEditDeckModal(card);
-            });
-
-            const deleteBtn = card.querySelector('.DropdownItem--deleteBtn');
-            deleteBtn.addEventListener('click', () => {
-                //TODO: implem delete
-            });
-
+            const fragment = createDeckCardItem(deck, deckCardTemplate);
             //add each deck before the addDeck card
             addDeck.before(fragment);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.CardItem')) {
+                document.querySelectorAll('.DropdownMenu.Open').forEach((m) => {
+                    m.classList.remove('Open');
+                });
+            }
         });
     } catch (error) {
         console.error(`Fetch error: ${error}`);
         showDecksError();
     }
+}
+
+function createDeckCardItem(deck, template) {
+    const fragment = template.content.cloneNode(true);
+    const card = fragment.querySelector('.CardItem');
+    card.dataset.id = deck.id;
+
+    const link = card.querySelector('a.DeckCardLink');
+    link.href = `deck.html?id=${deck.id}`;
+
+    const title = card.querySelector('.CardItem__title');
+    title.textContent = deck.name;
+
+    const desc = card.querySelector('.CardItem__sub');
+    desc.textContent = deck.description;
+
+    const cardsCount = card.querySelector(
+        '.CardItem__meta .Count__totalCardsValue',
+    );
+    cardsCount.textContent = `${deck.total_cards} cards`;
+
+    const cardsDue = card.querySelector(
+        '.CardItem__meta .Count__dueTodayValue',
+    );
+    cardsDue.textContent = `${deck.due_today} due`;
+
+    const chip = card.querySelector('.CardItem__chip');
+    chip.textContent = `${deck.due_today} due`;
+
+    const status = deck.due_today / deck.total_cards;
+
+    if (status > 0.7) {
+        chip.classList.add('High');
+    } else if (status > 0.4) {
+        chip.classList.add('Med');
+    } else {
+        chip.classList.add('Low');
+    }
+
+    const menuBtn = card.querySelector('.CardItem__menuBtn');
+    menuBtn.addEventListener('click', (e) => {
+        //prevent click from immediately  bubbling to the document
+        e.stopPropagation();
+
+        const menu = card.querySelector('.DropdownMenu');
+
+        //close all other open menus first
+        document.querySelectorAll('.DropdownMenu.Open').forEach((m) => {
+            if (m !== menu) m.classList.remove('Open');
+        });
+
+        menu.classList.toggle('Open');
+    });
+
+    const editBtn = card.querySelector('.DropdownItem--editBtn');
+    editBtn.addEventListener('click', () => {
+        closeDropdownMenu(card);
+        openEditDeckModal(card);
+    });
+
+    const deleteBtn = card.querySelector('.DropdownItem--deleteBtn');
+    deleteBtn.addEventListener('click', () => {
+        closeDropdownMenu(card);
+        openDeleteDeckModal(card);
+    });
+
+    return fragment;
 }
 
 function clearDecks() {
@@ -161,25 +185,8 @@ async function updateStats() {
 const addDeckCardBtn = document.querySelector('.DeckCard__addDeckBtn');
 const addDeckBtn = document.getElementById('add-deck-btn');
 const addDeckSubmitBtn = document.getElementById('add-deck-submit-btn');
-const modalCancelButtons = document.querySelectorAll(
-    '.Modal__overlay .Btn--cancel',
-);
-const modalCloseButtons = document.querySelectorAll('.Modal__closeBtn');
-
 addDeckCardBtn.addEventListener('click', openAddDeckModal);
 addDeckBtn.addEventListener('click', openAddDeckModal);
-
-modalCancelButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-        closeModalParent(btn);
-    });
-});
-
-modalCloseButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-        closeModalParent(btn);
-    });
-});
 
 addDeckSubmitBtn.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -238,7 +245,46 @@ function openAddDeckModal() {
 //Edit Deck Modal
 const editDeckSubmitBtn = document.getElementById('edit-deck-submit-btn');
 
+editDeckSubmitBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+
+    const editDeckId = document.getElementById('edit-deck-id');
+    const editDeckName = document.getElementById('edit-deck-name');
+    const editDeckNameError = document.getElementById('edit-deck-name-error');
+    const editDeckDesc = document.getElementById('edit-deck-description');
+
+    const isValidDeckName = validateDeckName(editDeckName, editDeckNameError);
+
+    if (isValidDeckName) {
+        try {
+            const res = await api.put(`/api/decks/${editDeckId.value}`, {
+                name: editDeckName.value,
+                description: editDeckDesc.value,
+            });
+
+            if (!res.ok) {
+                const resError = await res.json();
+                editDeckNameError.textContent = resError.message;
+                editDeckNameError.classList.add('show');
+                return;
+            }
+
+            //close modal and reload decks list
+            closeModalParent(editDeckSubmitBtn);
+
+            await updateStats();
+            clearDecks();
+            await loadDecks();
+        } catch (error) {
+            console.error(`Fetch error: ${error}`);
+            editDeckNameError.textContent = 'Failed to edit deck.';
+            editDeckNameError.classList.add('show');
+        }
+    }
+});
+
 function openEditDeckModal(card) {
+    const editDeckId = document.getElementById('edit-deck-id');
     const editDeckName = document.getElementById('edit-deck-name');
     const editDeckNameError = document.getElementById('edit-deck-name-error');
     const editDeckDesc = document.getElementById('edit-deck-description');
@@ -246,6 +292,7 @@ function openEditDeckModal(card) {
     const name = card.querySelector('.CardItem__title');
     const desc = card.querySelector('.CardItem__sub');
 
+    editDeckId.value = card.dataset.id;
     editDeckName.value = name.textContent;
     editDeckDesc.value = desc.textContent;
     editDeckNameError.textContent = '';
@@ -254,6 +301,51 @@ function openEditDeckModal(card) {
 
     const editModal = document.getElementById('edit-modal');
     editModal.classList.add('Open');
+}
+
+//Delete Deck Model
+const deleteDeckConfBtn = document.getElementById('confirm-delete-deck-btn');
+deleteDeckConfBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+
+    const deleteDeckId = document.getElementById('delete-deck-id');
+
+    try {
+        const res = await api.delete(`/api/decks/${deleteDeckId.value}`);
+
+        if (!res.ok) {
+            const resError = await res.json();
+            const deleteDeckError =
+                document.getElementById('delete-deck-error');
+            deleteDeckError.textContent = resError.message;
+            deleteDeckError.classList.add('show');
+            return;
+        }
+
+        //close modal and reload decks list
+        closeModalParent(deleteDeckConfBtn);
+
+        await updateStats();
+        clearDecks();
+        await loadDecks();
+    } catch (error) {
+        const deleteDeckError = document.getElementById('delete-deck-error');
+        console.error(`Fetch error: ${error}`);
+        deleteDeckError.textContent = 'Failed to delete deck.';
+        deleteDeckError.classList.add('show');
+    }
+});
+
+function openDeleteDeckModal(card) {
+    const deleteDeckid = document.getElementById('delete-deck-id');
+    const deleteDeckError = document.getElementById('delete-deck-error');
+
+    deleteDeckid.value = card.dataset.id;
+    deleteDeckError.textContent = '';
+    deleteDeckError.classList.remove('show');
+
+    const deleteModal = document.getElementById('delete-modal');
+    deleteModal.classList.add('Open');
 }
 
 function closeModalParent(elem) {
@@ -282,5 +374,23 @@ function validateDeckName(input, error) {
     input.classList.add('isSuccess');
     return true;
 }
+
+//Modal close and cancel buttons
+const modalCancelButtons = document.querySelectorAll(
+    '.Modal__overlay .Btn--cancel',
+);
+const modalCloseButtons = document.querySelectorAll('.Modal__closeBtn');
+
+modalCancelButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+        closeModalParent(btn);
+    });
+});
+
+modalCloseButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+        closeModalParent(btn);
+    });
+});
 
 await init();

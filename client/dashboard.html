@@ -185,6 +185,7 @@
                     ✕
                 </button>
                 <form class="Form ModalForm EditDeckForm">
+                    <input type="hidden" id="edit-deck-id" />
                     <div class="Field">
                         <label for="edit-deck-name">Deck name</label>
                         <div class="Field__inputWrap">
@@ -194,9 +195,10 @@
                                 placeholder="e.g. Japanese N3 Vocabulary"
                             />
                         </div>
-                        <div class="Field__error" id="edit-deck-name-error">
-                            Required
-                        </div>
+                        <div
+                            class="Field__error"
+                            id="edit-deck-name-error"
+                        ></div>
                     </div>
                     <div class="Field">
                         <label for="edit-deck-description"
@@ -234,7 +236,9 @@
         <!-- Delete deck modal -->
         <div class="Modal__overlay" id="delete-modal">
             <div class="Modal Modal--delete">
+                <input type="hidden" id="delete-deck-id" />
                 <h3 class="Modal__title">Delete this deck?</h3>
+                <div class="Field__error" id="delete-deck-error"></div>
                 <button
                     class="Modal__closeBtn"
                     type="button"
@@ -251,7 +255,11 @@
                     >
                         Cancel
                     </button>
-                    <button class="Btn Btn--delete" type="button">
+                    <button
+                        class="Btn Btn--delete"
+                        type="button"
+                        id="confirm-delete-deck-btn"
+                    >
                         Delete deck
                     </button>
                 </div>
