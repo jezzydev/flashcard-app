@@ -85,6 +85,7 @@
                         <p class="Stats__label">Day streak</p>
                     </div>
                 </section>
+
                 <!-- Add card form -->
                 <section class="AddCardSection">
                     <p class="AddCard__title">
@@ -104,34 +105,45 @@
                         Add a card
                     </p>
                     <form class="Form AddCardForm">
+                        <div
+                            class="Field__error"
+                            id="add-card-form-error"
+                        ></div>
                         <div class="Field">
-                            <label for="addcard-front">Front (question)</label>
+                            <label for="add-card-front">Front (question)</label>
                             <div class="Field__inputWrap">
                                 <input
                                     type="text"
-                                    id="addcard-front"
+                                    id="add-card-front"
                                     placeholder="e.g. What is a closure in JavaScript?"
                                 />
                             </div>
-                            <div class="Field__error" id="addcard-front-error">
-                                Required
-                            </div>
+                            <div
+                                class="Field__error"
+                                id="add-card-front-error"
+                            ></div>
                         </div>
                         <div class="Field">
-                            <label for="addcard-back">Back (answer)</label>
+                            <label for="add-card-back">Back (answer)</label>
                             <div class="Field__inputWrap">
                                 <textarea
-                                    id="addcard-back"
+                                    id="add-card-back"
                                     rows="3"
                                     placeholder="e.g., A function that retains access to variables from its outer scope."
                                 ></textarea>
                             </div>
-                            <div class="Field__error" id="addcard-back-error">
-                                Required
-                            </div>
+                            <div
+                                class="Field__error"
+                                id="add-card-back-error"
+                            ></div>
                         </div>
                         <div class="AddCardForm__footer">
-                            <button class="Btn Btn--primary AddCard__btn">
+                            <button
+                                class="Btn Btn--primary AddCard__btn"
+                                type="submit"
+                                id="add-card-submit-btn"
+                                aria-label="Button to add card"
+                            >
                                 <svg
                                     width="14"
                                     height="14"
@@ -150,6 +162,7 @@
                         </div>
                     </form>
                 </section>
+
                 <!-- Cards list -->
                 <section class="CardsListSection">
                     <div class="CardsList__header">
@@ -177,63 +190,95 @@
                 <button
                     class="Modal__closeBtn"
                     type="button"
+                    id="edit-card-close-btn"
                     aria-label="Button to close the modal"
                 >
                     ✕
                 </button>
                 <form class="Form ModalForm EditCardForm">
+                    <input type="hidden" id="edit-card-id" />
+                    <div class="Field__error" id="edit-card-form-error"></div>
                     <div class="Field">
-                        <label for="editcard-front">Front (question)</label>
+                        <label for="edit-card-front">Front (question)</label>
                         <div class="Field__inputWrap">
                             <input
                                 type="text"
-                                id="editcard-front"
-                                placeholder="e.g. Japanese N3 Vocabulary"
+                                id="edit-card-front"
+                                placeholder="e.g. What is a closure in JavaScript?"
                             />
                         </div>
-                        <div class="Field__error" id="editcard-front-error">
-                            Required
-                        </div>
+                        <div
+                            class="Field__error"
+                            id="edit-card-front-error"
+                        ></div>
                     </div>
                     <div class="Field">
-                        <label for="editcard-back"
-                            >Description<span class="Optional"
-                                >optional</span
-                            ></label
-                        >
+                        <label for="edit-card-back">Back (answer)</label>
                         <div class="Field__inputWrap">
                             <textarea
-                                id="editcard-back"
+                                id="edit-card-back"
                                 rows="3"
-                                placeholder="What will you study in this deck?"
+                                placeholder="e.g., A function that retains access to variables from its outer scope."
                             ></textarea>
                         </div>
-                        <div class="Field__error" id="editcard-back-error">
-                            Required
-                        </div>
+                        <div
+                            class="Field__error"
+                            id="edit-card-back-error"
+                        ></div>
                     </div>
                     <div class="Modal__actions">
-                        <button class="Btn Btn--cancel">Cancel</button>
-                        <button class="Btn Btn--primary">Update card</button>
+                        <button
+                            class="Btn Btn--cancel"
+                            type="button"
+                            id="edit-card-cancel-btn"
+                            aria-label="Cancel card update button"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            class="Btn Btn--primary"
+                            type="submit"
+                            id="edit-card-submit-btn"
+                            aria-label="Confirm card update button"
+                        >
+                            Update card
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
+
         <!-- Delete card modal -->
         <div class="Modal__overlay" id="delete-modal">
             <div class="Modal Modal--delete">
+                <input type="hidden" id="delete-card-id" />
+                <div class="Field__error" id="delete-card-error"></div>
                 <h3 class="Modal__title">Delete this card?</h3>
                 <button
                     class="Modal__closeBtn"
                     type="button"
+                    id="delete-card-close-btn"
                     aria-label="Button to close the modal"
                 >
                     ✕
                 </button>
-                <p class="DeleteMsg"></p>
                 <div class="Modal__actions">
-                    <button class="Btn Btn--cancel">Cancel</button>
-                    <button class="Btn Btn--delete">Delete card</button>
+                    <button
+                        class="Btn Btn--cancel"
+                        type="button"
+                        id="delete-card-cancel-btn"
+                        aria-label="Cancel card deletion button"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        class="Btn Btn--delete"
+                        type="button"
+                        id="delete-card-conf-delete-btn"
+                        aria-label="Confirm card deletion button"
+                    >
+                        Delete card
+                    </button>
                 </div>
             </div>
         </div>

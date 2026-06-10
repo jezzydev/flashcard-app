@@ -77,10 +77,6 @@ router.get('/:id/cards', async (req, res, next) => {
             [deckId],
         );
 
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'Deck not found.' });
-        }
-
         res.json(result.rows);
     } catch (error) {
         next(error);
@@ -116,13 +112,14 @@ router.get('/:id/stats', async (req, res, next) => {
         isValidDeckId(deckId);
 
         const cardResult = await pool.query(
-            `SELECT count(distinct c.id) as total_cards, 
+            `SELECT d.id, count(distinct c.id) as total_cards, 
                 COUNT(distinct c.id) FILTER(WHERE c.due_date <= now()) as due_today,
                 COUNT(rvw.id) FILTER (WHERE rating >= 3) * 100.0 / NULLIF(COUNT(rvw.id), 0) AS retention_rate
-            FROM cards c
+            FROM decks d
+            LEFT JOIN cards c ON d.id = c.deck_id
             LEFT JOIN session_reviews rvw ON c.id = rvw.card_id
-            WHERE c.deck_id = $1
-            GROUP BY c.deck_id; `,
+            WHERE d.id = $1
+            GROUP BY d.id; `,
             [deckId],
         );
 

@@ -141,6 +141,7 @@
                     method="POST"
                     novalidate
                 >
+                    <div class="Field__error" id="add-deck-form-error"></div>
                     <div class="Field">
                         <label for="add-deck-name">Deck name</label>
                         <div class="Field__inputWrap">
@@ -188,6 +189,7 @@
                 </form>
             </div>
         </div>
+
         <!-- Edit deck modal -->
         <div class="Modal__overlay" id="edit-modal">
             <div class="Modal">
@@ -195,12 +197,14 @@
                 <button
                     class="Modal__closeBtn"
                     type="button"
+                    id="edit-deck-close-btn"
                     aria-label="Button to close the modal"
                 >
                     ✕
                 </button>
                 <form class="Form ModalForm EditDeckForm">
                     <input type="hidden" id="edit-deck-id" />
+                    <div class="Field__error" id="edit-deck-form-error"></div>
                     <div class="Field">
                         <label for="edit-deck-name">Deck name</label>
                         <div class="Field__inputWrap">
@@ -233,7 +237,8 @@
                         <button
                             class="Btn Btn--cancel"
                             type="button"
-                            aria-label="Cancel deck update"
+                            id="edit-deck-cancel-btn"
+                            aria-label="Cancel deck update button"
                         >
                             Cancel
                         </button>
@@ -241,6 +246,7 @@
                             class="Btn Btn--submit"
                             type="submit"
                             id="edit-deck-submit-btn"
+                            aria-label="Confirm deck update button"
                         >
                             Update deck
                         </button>
@@ -248,6 +254,7 @@
                 </form>
             </div>
         </div>
+
         <!-- Delete deck modal -->
         <div class="Modal__overlay" id="delete-modal">
             <div class="Modal Modal--delete">
@@ -257,23 +264,25 @@
                 <button
                     class="Modal__closeBtn"
                     type="button"
+                    id="delete-deck-close-btn"
                     aria-label="Button to close the modal"
                 >
                     ✕
                 </button>
-                <p class="DeleteMsg"></p>
                 <div class="Modal__actions">
                     <button
                         class="Btn Btn--cancel"
                         type="button"
-                        aria-label="Cancel deck deletion"
+                        id="delete-deck-cancel-btn"
+                        aria-label="Cancel deck deletion button"
                     >
                         Cancel
                     </button>
                     <button
                         class="Btn Btn--delete"
                         type="button"
-                        id="confirm-delete-deck-btn"
+                        id="delete-deck-conf-delete-btn"
+                        aria-label="Confirm deck deletion button"
                     >
                         Delete deck
                     </button>

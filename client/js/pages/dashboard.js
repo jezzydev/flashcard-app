@@ -98,6 +98,7 @@ async function loadDecks() {
 function createDeckCardItem(deck, template) {
     const fragment = template.content.cloneNode(true);
     const cardItem = fragment.querySelector('.CardItem');
+
     cardItem.dataset.id = deck.id;
 
     const link = cardItem.querySelector('a.DeckCardLink');
@@ -109,19 +110,22 @@ function createDeckCardItem(deck, template) {
     const desc = cardItem.querySelector('.CardItem__sub');
     desc.textContent = deck.description;
 
+    //total cards
     const cardsCount = cardItem.querySelector(
         '.CardItem__meta .Count__totalCardsValue',
     );
     cardsCount.textContent = `${deck.total_cards} cards`;
 
+    //cards due
     const cardsDue = cardItem.querySelector(
         '.CardItem__meta .Count__dueTodayValue',
     );
     cardsDue.textContent = `${deck.due_today} due`;
 
-    const chip = cardItem.querySelector('.CardItem__chip');
+    const chip = cardItem.querySelector('.CardItem__dueInfo');
     chip.textContent = `${deck.due_today} due`;
 
+    //due info
     const status = deck.due_today / deck.total_cards;
 
     if (status > 0.7) {
@@ -132,6 +136,7 @@ function createDeckCardItem(deck, template) {
         chip.classList.add('Low');
     }
 
+    //deck menu
     const menuBtn = cardItem.querySelector('.CardItem__menuBtn');
     menuBtn.addEventListener('click', (e) => {
         //prevent click from immediately  bubbling to the document
@@ -147,12 +152,14 @@ function createDeckCardItem(deck, template) {
         menu.classList.toggle('Open');
     });
 
+    //edit btn
     const editBtn = cardItem.querySelector('.DropdownItem--editBtn');
     editBtn.addEventListener('click', () => {
         closeDropdownMenu(cardItem);
         openEditDeckModal(cardItem);
     });
 
+    //delete btn
     const deleteBtn = cardItem.querySelector('.DropdownItem--deleteBtn');
     deleteBtn.addEventListener('click', () => {
         closeDropdownMenu(cardItem);
@@ -164,7 +171,7 @@ function createDeckCardItem(deck, template) {
 
 function clearDecks() {
     const decks = document.querySelectorAll('.DeckGrid .DeckCard');
-    decks.forEach((li) => li.remove());
+    decks.forEach((d) => d.remove());
 }
 
 function showDecksSectionError(msg) {
@@ -190,6 +197,8 @@ addDeckSubmitBtn.addEventListener('click', async (e) => {
     const addDeckName = document.getElementById('add-deck-name');
     const addDeckNameError = document.getElementById('add-deck-name-error');
     const addDeckDesc = document.getElementById('add-deck-description');
+    const formError = document.getElementById('add-deck-form-error');
+
     const description = addDeckDesc.value || undefined;
 
     const isValidDeckName = validateDeckName(addDeckName, addDeckNameError);
@@ -204,34 +213,41 @@ addDeckSubmitBtn.addEventListener('click', async (e) => {
 
             if (!res.ok) {
                 const resError = await res.json();
-                addDeckNameError.textContent = resError.message;
-                addDeckNameError.classList.add('show');
+                formError.textContent = resError.message;
+                formError.classList.add('show');
                 return;
             }
 
             //close modal and reload decks list
-            closeModalParent(addDeckSubmitBtn);
+            util.closeParentModal(addDeckSubmitBtn);
 
             await loadStats();
             clearDecks();
             await loadDecks();
         } catch (error) {
             console.error(`Fetch error: ${error}`);
-            addDeckNameError.textContent = 'Failed to create deck.';
-            addDeckNameError.classList.add('show');
+            formError.textContent = 'Failed to create deck.';
+            formError.classList.add('show');
         }
     }
 });
 
 function openAddDeckModal() {
     const addDeckName = document.getElementById('add-deck-name');
-    const addDeckNameError = document.getElementById('add-deck-name-error');
-    const addDeckDesc = document.getElementById('add-deck-description');
-
     addDeckName.value = '';
-    addDeckDesc.value = '';
+    addDeckName.classList.remove('isSuccess', 'isError');
+
+    const addDeckNameError = document.getElementById('add-deck-name-error');
     addDeckNameError.textContent = '';
     addDeckNameError.classList.remove('show');
+
+    const addDeckDesc = document.getElementById('add-deck-description');
+    addDeckDesc.value = '';
+
+    const formError = document.getElementById('add-deck-form-error');
+    formError.textContent = '';
+    formError.classList.remove('show');
+
     addDeckName.focus();
 
     const addModal = document.getElementById('add-modal');
@@ -248,7 +264,7 @@ editDeckSubmitBtn.addEventListener('click', async (e) => {
     const editDeckName = document.getElementById('edit-deck-name');
     const editDeckNameError = document.getElementById('edit-deck-name-error');
     const editDeckDesc = document.getElementById('edit-deck-description');
-
+    const formError = document.getElementById('edit-deck-form-error');
     const isValidDeckName = validateDeckName(editDeckName, editDeckNameError);
 
     if (isValidDeckName) {
@@ -260,72 +276,77 @@ editDeckSubmitBtn.addEventListener('click', async (e) => {
 
             if (!res.ok) {
                 const resError = await res.json();
-                editDeckNameError.textContent = resError.message;
-                editDeckNameError.classList.add('show');
+                formError.textContent = resError.message;
+                formError.classList.add('show');
                 return;
             }
 
             //close modal and reload decks list
-            closeModalParent(editDeckSubmitBtn);
+            util.closeParentModal(editDeckSubmitBtn);
 
             await loadStats();
             clearDecks();
             await loadDecks();
         } catch (error) {
             console.error(`Fetch error: ${error}`);
-            editDeckNameError.textContent = 'Failed to edit deck.';
-            editDeckNameError.classList.add('show');
+            formError.textContent = 'Failed to edit deck.';
+            formError.classList.add('show');
         }
     }
 });
 
 function openEditDeckModal(card) {
-    const editDeckId = document.getElementById('edit-deck-id');
-    const editDeckName = document.getElementById('edit-deck-name');
-    const editDeckNameError = document.getElementById('edit-deck-name-error');
-    const editDeckDesc = document.getElementById('edit-deck-description');
-
     const name = card.querySelector('.CardItem__title');
     const desc = card.querySelector('.CardItem__sub');
 
+    const editDeckId = document.getElementById('edit-deck-id');
     editDeckId.value = card.dataset.id;
+
+    const editDeckName = document.getElementById('edit-deck-name');
     editDeckName.value = name.textContent;
-    editDeckDesc.value = desc.textContent;
+    editDeckName.classList.remove('isSuccess', 'isError');
+
+    const editDeckNameError = document.getElementById('edit-deck-name-error');
     editDeckNameError.textContent = '';
     editDeckNameError.classList.remove('show');
+
+    const editDeckDesc = document.getElementById('edit-deck-description');
+    editDeckDesc.value = desc.textContent;
+
     editDeckName.focus();
 
     const editModal = document.getElementById('edit-modal');
     editModal.classList.add('Open');
 }
 
-//Delete Deck Model
-const deleteDeckConfBtn = document.getElementById('confirm-delete-deck-btn');
+//Delete Deck Modal
+const deleteDeckConfBtn = document.getElementById(
+    'delete-deck-conf-delete-btn',
+);
+
 deleteDeckConfBtn.addEventListener('click', async (e) => {
     e.preventDefault();
 
     const deleteDeckId = document.getElementById('delete-deck-id');
+    const deleteDeckError = document.getElementById('delete-deck-error');
 
     try {
         const res = await api.delete(`/api/decks/${deleteDeckId.value}`);
 
         if (!res.ok) {
             const resError = await res.json();
-            const deleteDeckError =
-                document.getElementById('delete-deck-error');
             deleteDeckError.textContent = resError.message;
             deleteDeckError.classList.add('show');
             return;
         }
 
         //close modal and reload decks list
-        closeModalParent(deleteDeckConfBtn);
+        util.closeParentModal(deleteDeckConfBtn);
 
         await loadStats();
         clearDecks();
         await loadDecks();
     } catch (error) {
-        const deleteDeckError = document.getElementById('delete-deck-error');
         console.error(`Fetch error: ${error}`);
         deleteDeckError.textContent = 'Failed to delete deck.';
         deleteDeckError.classList.add('show');
@@ -342,11 +363,6 @@ function openDeleteDeckModal(card) {
 
     const deleteModal = document.getElementById('delete-modal');
     deleteModal.classList.add('Open');
-}
-
-function closeModalParent(elem) {
-    const modal = elem.closest('.Modal__overlay');
-    modal.classList.remove('Open');
 }
 
 function closeDropdownMenu(card) {
@@ -385,18 +401,9 @@ function showPageError(msg) {
 const modalCancelButtons = document.querySelectorAll(
     '.Modal__overlay .Btn--cancel',
 );
+util.triggerCloseModal(modalCancelButtons);
+
 const modalCloseButtons = document.querySelectorAll('.Modal__closeBtn');
-
-modalCancelButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-        closeModalParent(btn);
-    });
-});
-
-modalCloseButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-        closeModalParent(btn);
-    });
-});
+util.triggerCloseModal(modalCloseButtons);
 
 await init();

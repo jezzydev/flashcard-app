@@ -37,3 +37,17 @@ export const fetchTemplate = async (templateFilename, templateId) => {
     const doc = parser.parseFromString(htmlText, 'text/html');
     return doc.getElementById(templateId);
 };
+
+export const triggerCloseModal = (buttons) => {
+    buttons.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeParentModal(btn);
+        });
+    });
+};
+
+export const closeParentModal = (elem) => {
+    const modal = elem.closest('.Modal__overlay');
+    modal.classList.remove('Open');
+};
