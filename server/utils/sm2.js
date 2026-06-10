@@ -17,7 +17,9 @@ export const calculateNextReview = (card, rating) => {
     //Update ease factor (min 1.3)
     card.ease_factor = Math.max(
         1.3,
-        card.ease_factor + 0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02),
+        card.ease_factor +
+            0.1 -
+            (5 - rating) * (0.08 + (5 - rating) * 0.02).toFixed(1),
     );
     const date = new Date();
     date.setDate(date.getDate() + card.interval);

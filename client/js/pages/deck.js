@@ -136,7 +136,54 @@ function createCardItem(card, template) {
     const answer = cardItem.querySelector('.CardItem__sub');
     answer.textContent = card.back;
 
+    const percent = calcEasePercent(card.ease_factor);
+    const easeFill = cardItem.querySelector('.EaseBar__fill');
+    easeFill.style.width = `${percent}%`;
+    const easeLabel = cardItem.querySelector('.EaseBar__label');
+    easeLabel.textContent = `EF ${Number(card.ease_factor).toFixed(1)}`;
+
+    const repInt = cardItem.querySelector('.Meta__repInt');
+    repInt.textContent = `Rep ${card.repetitions} - Int ${card.interval}d`;
+
+    const dueInfo = cardItem.querySelector('.CardItem__dueInfo');
+    const diff = calcDueInfo(card.due_date);
+
+    if (diff <= 0) {
+        dueInfo.textContent = 'Due today';
+        dueInfo.classList.add('High');
+    } else if (diff === 1) {
+        dueInfo.textContent = 'Due tomorrow';
+        dueInfo.classList.add('Med');
+    } else {
+        dueInfo.textContent = `Due in ${diff} days`;
+        if (diff >= 2 && diff <= 5) {
+            dueInfo.classList.add('Med');
+        } else {
+            dueInfo.classList.add('Low');
+        }
+    }
+
     return fragment;
+}
+
+function calcEasePercent(easeFactor) {
+    const MIN_EASE = 1.3;
+    const DISPLAY_MAX = 3.5; //cap only for the bar display
+
+    return Math.min(
+        ((easeFactor - MIN_EASE) / (DISPLAY_MAX - MIN_EASE)) * 100,
+        100,
+    );
+}
+
+function calcDueInfo(dueDate) {
+    const date = new Date(dueDate);
+    date.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return (date.getTime() - today.getTime()) / 86_400_000;
 }
 
 function showPageError(msg) {
