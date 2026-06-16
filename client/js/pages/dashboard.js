@@ -1,4 +1,3 @@
-import * as auth from '../auth.js';
 import { requireAuth } from '../auth-init.js';
 import api from '../api.js';
 import * as util from '../utils.js';
