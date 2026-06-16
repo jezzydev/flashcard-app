@@ -53,7 +53,7 @@ export const softAuthenticate = async (req, res, next) => {
         const token = req.get('Authorization')?.split(' ')[1];
 
         if (token) {
-            user = await jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+            const user = await jwt.verify(token, process.env.JWT_ACCESS_SECRET);
             req.user = user;
         }
     } catch (error) {

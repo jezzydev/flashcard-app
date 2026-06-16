@@ -82,6 +82,13 @@ class ApiClient {
             return null;
         }
     }
+
+    logout() {
+        return fetch(`${this.baseUrl}/api/auth/logout`, {
+            method: 'POST',
+            credentials: 'include',
+        });
+    }
 }
 
 const API_BASE_URL = '';

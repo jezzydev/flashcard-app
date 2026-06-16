@@ -373,4 +373,18 @@ function updateProgressAndStats(rating, reviewedCnt, correctCnt, totalDue) {
     });
 }
 
+//Logout
+const logoutBtn = document.querySelector('.Logout');
+logoutBtn.addEventListener('click', async (e) => {
+    try {
+        e.preventDefault();
+        await api.logout();
+        window.location.replace('index.html');
+        return;
+    } catch (error) {
+        console.error(`Fetch error: ${error}`);
+        showPageError('Error while logging out.');
+    }
+});
+
 await init();

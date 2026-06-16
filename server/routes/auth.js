@@ -16,7 +16,8 @@ import crypto from 'crypto';
 import { softAuthenticate } from '../middleware/authentication.js';
 
 const router = express.Router();
-const REFRESH_PATH = '/api/auth/refresh';
+//Widen scope of refresh path to /api/auth instead of /api/auth/refresh so cookie is also sent on logout.
+const REFRESH_PATH = '/api/auth';
 
 const cookieSettings = {
     httpOnly: true,
@@ -87,6 +88,11 @@ router.post('/login', async (req, res, next) => {
                 ERROR_CODES.AUTHENTICATION_FAILED,
             );
         }
+
+        //revoke all tokens before generating new one
+        //Tradeoff: this kils all sessions on all devices on every login.
+        //In the future, if adding multi-devire support, must switch to token family model or per-device revocation.
+        await revokeAllUserTokens(user.id);
 
         //generate refresh token
         const payload = {
@@ -181,10 +187,16 @@ router.post('/refresh', async (req, res, next) => {
 });
 
 //Logout user
-router.post('/logout', softAuthenticate, async (req, res, next) => {
+router.post('/logout', async (req, res, next) => {
     try {
-        if (req.user?.sub) {
-            await revokeAllUserTokens(req.user.sub);
+        const refreshToken = req.cookies?.refreshToken;
+
+        if (refreshToken) {
+            const decoded = jwt.decode(refreshToken);
+
+            if (decoded?.sub) {
+                await revokeAllUserTokens(decoded.sub);
+            }
         }
         res.clearCookie('refreshToken', clearCookieSettings);
         res.sendStatus(204);
