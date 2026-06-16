@@ -39,6 +39,15 @@ router.post('/sessions/:id/review', async (req, res, next) => {
                 'INSERT INTO session_reviews (session_id, card_id, rating) VALUES ($1, $2, $3);',
                 [sessionId, review.card_id, review.rating],
             );
+
+            await client.query(
+                `UPDATE study_sessions 
+                SET cards_reviewed = cards_reviewed + 1,
+                cards_correct = cards_correct + $2
+                WHERE id = $1`,
+                [sessionId, review.rating >= 3 ? 1 : 0],
+            );
+
             await client.query(
                 `UPDATE cards 
                 SET interval = $1, 
@@ -51,15 +60,16 @@ router.post('/sessions/:id/review', async (req, res, next) => {
                     card.ease_factor,
                     card.repetitions,
                     card.due_date,
-                    card.id,
+                    review.card_id,
                 ],
             );
+
             await client.query('COMMIT');
         } catch (error) {
             await client.query('ROLLBACK');
             throw error;
         } finally {
-            await client.release;
+            await client.release();
         }
 
         res.status(201).json({ message: 'Card review submitted.' });

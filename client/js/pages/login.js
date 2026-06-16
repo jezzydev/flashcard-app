@@ -36,6 +36,7 @@ loginForm.addEventListener('submit', async (e) => {
 
         const data = await res.json();
         auth.setAccessToken(data.access_token);
+
         window.location.replace('./dashboard.html');
         return;
     } catch (error) {

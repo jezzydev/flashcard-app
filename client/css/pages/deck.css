@@ -1,3 +1,7 @@
+.Deck__studyBtn {
+    text-decoration: none;
+}
+
 .Stats__container.DeckStats {
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;

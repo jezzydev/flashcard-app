@@ -19,7 +19,7 @@ export const isValidCardRating = (rating) => {
 
     const num = Number(rating);
 
-    if (isNaN(num) || !Number.isInteger(num) || num <= 0)
+    if (isNaN(num) || !Number.isInteger(num) || num < 0)
         throw new ValidationError(
             'Invalid card rating.',
             field,

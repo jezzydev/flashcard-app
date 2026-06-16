@@ -92,7 +92,7 @@ router.get('/:id/study', async (req, res, next) => {
         const result = await pool.query(
             `SELECT * FROM cards 
             WHERE deck_id = $1
-            AND due_date <= now() 
+            AND due_date <= now()
             ORDER BY due_date, created_at
             LIMIT 20;`,
             [deckId],

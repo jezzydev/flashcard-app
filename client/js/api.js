@@ -74,7 +74,7 @@ class ApiClient {
                 credentials: 'include',
             });
 
-            if (!res) return null;
+            if (!res.ok) return null;
 
             const data = await res.json();
             return data.access_token;

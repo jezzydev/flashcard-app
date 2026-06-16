@@ -14,7 +14,7 @@ import cardRoutes from './routes/cards.js';
 import studyRoutes from './routes/study.js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.APP_PORT || 3000;
 const __dirname = import.meta.dirname;
 
 app.use(express.json());
@@ -28,7 +28,7 @@ testConnection().catch((err) => {
 
 app.use(
     cors({
-        origin: process.env.CLIENT_URL,
+        origin: process.env.APP_URL,
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
     }),

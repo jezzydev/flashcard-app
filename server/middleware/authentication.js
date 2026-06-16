@@ -16,7 +16,7 @@ export const authenticateToken = async (req, res, next) => {
         let user;
         //verify token
         try {
-            user = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+            user = await jwt.verify(token, process.env.JWT_ACCESS_SECRET);
         } catch (error) {
             if (error.name === 'TokenExpiredError') {
                 throw new AuthenticationError(
@@ -53,7 +53,7 @@ export const softAuthenticate = async (req, res, next) => {
         const token = req.get('Authorization')?.split(' ')[1];
 
         if (token) {
-            user = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+            user = await jwt.verify(token, process.env.JWT_ACCESS_SECRET);
             req.user = user;
         }
     } catch (error) {

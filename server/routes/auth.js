@@ -13,7 +13,6 @@ import {
     generateRefreshToken,
 } from '../utils/tokenGen.js';
 import crypto from 'crypto';
-import { tracingChannel } from 'diagnostics_channel';
 import { softAuthenticate } from '../middleware/authentication.js';
 
 const router = express.Router();
@@ -129,7 +128,7 @@ router.post('/refresh', async (req, res, next) => {
             //verify token integrity and expiry
             const decoded = await jwt.verify(
                 refreshToken,
-                process.env.REFRESH_TOKEN_SECRET,
+                process.env.JWT_REFRESH_SECRET,
             );
             ({ sub: user.id, email: user.email, name: user.name } = decoded);
         } catch (error) {
@@ -216,7 +215,7 @@ async function revokeAllUserTokens(userId) {
         await client.query('ROLLBACK');
         throw error;
     } finally {
-        await client.release;
+        await client.release();
     }
 }
 
@@ -239,7 +238,7 @@ async function createNewRefreshToken(payload, oldRefreshTokenHash = undefined) {
             [userId, newRefreshTokenHash, expDate],
         );
 
-        if (!oldRefreshTokenHash) {
+        if (oldRefreshTokenHash) {
             await client.query(
                 'UPDATE refresh_tokens SET revoked_at = $1 WHERE user_id = $2 AND token_hash = $3;',
                 [new Date(), userId, oldRefreshTokenHash],

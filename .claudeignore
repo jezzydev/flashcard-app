@@ -1,0 +1,292 @@
+# .claudeignore
+
+# Files and directories Claude Code should not read, index, or reference.
+
+# Uses the same syntax as .gitignore.
+
+# Place at project root.
+
+#
+
+# IMPORTANT: As of early 2026, Claude Code has a known bug where it may
+
+# read files listed here anyway if asked directly or if it judges them
+
+# necessary to complete a task. This file reduces risk but is not a
+
+# hard technical block. Pair it with OS-level file permissions (chmod 600)
+
+# for secrets that must never be exposed.
+
+# ─── Secrets & Credentials ─────────────────────────────────────────────────
+
+.env
+.env.\*
+!.env.example
+!.env.test.example
+
+_.pem
+_.key
+_.p12
+_.pfx
+_.crt
+_.cer
+_.der
+_.jks
+\*.keystore
+
+credentials/
+secrets/
+.secrets/
+private/
+certs/
+certificates/
+
+# Cloud provider credential files
+
+.aws/
+.gcp/
+.azure/
+.oci/
+application_default_credentials.json
+service-account*.json
+*-service-account.json
+\*-credentials.json
+gcloud/
+
+# SSH
+
+.ssh/
+id_rsa
+id_ed25519
+\*.pub
+
+# Token and auth files
+
+_.token
+auth.json
+token.json
+oauth_.json
+.netrc
+.npmrc
+.pypirc
+service-account\*.json
+
+# ─── Claude Internal Data ──────────────────────────────────────────────────
+
+.claude/projects/
+.claude/statsig/
+.claude/todos/
+.claude/cache/
+
+# ─── Dependencies ──────────────────────────────────────────────────────────
+
+# Large, auto-generated — Claude doesn't need to read these
+
+node_modules/
+.pnp/
+.pnp.js
+.yarn/cache/
+.yarn/unplugged/
+
+vendor/
+.venv/
+venv/
+env/
+**pypackages**/
+
+packages/\*/node_modules/
+
+# ─── Build Output ──────────────────────────────────────────────────────────
+
+# Generated files — Claude should work from source, not output
+
+dist/
+build/
+out/
+.next/
+.nuxt/
+.svelte-kit/
+.output/
+.vercel/
+.netlify/
+public/build/
+coverage/
+.nyc_output/
+_.min.js
+_.min.css
+_.bundle.js
+_.chunk.js
+
+# Compiled binaries
+
+_.exe
+_.dll
+_.so
+_.dylib
+_.class
+_.pyc
+_.pyo
+**pycache**/
+_.o
+\*.obj
+
+# ─── Logs ──────────────────────────────────────────────────────────────────
+
+# May contain sensitive runtime data, stack traces, user info
+
+logs/
+_.log
+_.log._
+npm-debug.log_
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+pip-log.txt
+crash.log
+error.log
+
+# ─── Database Files ────────────────────────────────────────────────────────
+
+# Local DB files may contain real user data
+
+_.sqlite
+_.sqlite3
+_.db
+_.db-shm
+_.db-wal
+_.sql.gz
+dump.sql
+\*.dump
+data/
+pgdata/
+mongo-data/
+redis-data/
+
+# ─── Test Fixtures with Real Data ──────────────────────────────────────────
+
+# Seed files sometimes contain realistic PII or production-like data
+
+# Remove this block if your fixtures are safe synthetic data
+
+tests/fixtures/production/
+tests/data/real/
+seed/production/
+
+# ─── IDE & Editor ──────────────────────────────────────────────────────────
+
+# Internal editor state — not useful context for Claude
+
+.idea/
+.vscode/settings.json
+.vscode/launch.json
+_.suo
+_.user
+_.userosscache
+_.sln.docstates
+_.swp
+_.swo
+\*~
+.DS_Store
+Thumbs.db
+
+# ─── OS Generated ──────────────────────────────────────────────────────────
+
+.DS*Store
+.DS_Store?
+.*\*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# ─── CI/CD & Deployment ────────────────────────────────────────────────────
+
+# May contain environment-specific secrets or deployment targets
+
+.github/workflows/secrets/
+.circleci/
+.travis.yml
+Jenkinsfile
+deployment/
+deploy/
+k8s/secrets/
+helm/secrets/
+terraform/_.tfvars
+terraform/_.tfstate
+terraform/_.tfstate.backup
+_.tfvars
+!\*.tfvars.example
+.terraformrc
+terraform.rc
+
+# ─── Docker ────────────────────────────────────────────────────────────────
+
+.docker/
+docker-compose.override.yml
+docker-compose.prod.yml
+
+# ─── Package Manager Locks ─────────────────────────────────────────────────
+
+# Useful for humans, noisy for Claude — large auto-generated files
+
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+poetry.lock
+Pipfile.lock
+Gemfile.lock
+composer.lock
+go.sum
+
+# ─── Generated & Cache ─────────────────────────────────────────────────────
+
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+.prettiercache
+.tsbuildinfo
+\*.tsbuildinfo
+.turbo/
+.nx/cache/
+.gradle/
+.m2/
+target/
+Cargo.lock
+
+# ─── Large Media & Binary Assets ───────────────────────────────────────────
+
+# Claude can't meaningfully read these and they waste context
+
+_.jpg
+_.jpeg
+_.png
+_.gif
+_.webp
+_.svg
+_.ico
+_.mp4
+_.mp3
+_.wav
+_.mov
+_.avi
+_.pdf
+_.zip
+_.tar
+_.tar.gz
+_.rar
+_.7z
+_.woff
+_.woff2
+_.ttf
+_.eot
+
+# ─── Backup Files ──────────────────────────────────────────────────────────
+
+_.bak
+_.backup
+_.orig
+_.tmp
+\*.temp

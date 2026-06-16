@@ -17,7 +17,18 @@ npm-debug.log*
 .env.development.local
 .env.test.local
 .env.production.local
-.env*
+.env.*
+!.env.example
+*.pem
+*.key
+credentials/
+secrets/
+private/
+certs/
+certificates/
+.claude/statsig/
+.claude/projects/
+.claude/todos/
 
 # Testing
 /coverage
@@ -36,7 +47,6 @@ npm-debug.log*
 
 # Misc
 *.log
-*.pem
 .DS_Store
 Thumbs.db
 .prettierignore

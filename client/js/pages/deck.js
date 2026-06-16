@@ -10,23 +10,50 @@ async function init() {
 
     if (!token) return;
 
-    //load page content
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
+    deckId = parseInt(
+        new URLSearchParams(window.location.search).get('id'),
+        10,
+    );
 
-    if (!id) {
+    if (!deckId) {
         window.location.href = 'dashboard.html';
         return;
     }
 
-    deckId = id;
+    //load page content
     await loadDeckInfo(deckId);
     await loadDeckStats(deckId);
     await loadDeckCards(deckId);
+
+    const studyBtn = document.querySelector('.Deck__studyBtn');
+    studyBtn.href = `study.html/deckId=${deckId}`;
+    studyBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const totalCards = parseInt(
+            document.querySelector('.DeckStats__totalCards').textContent,
+            10,
+        );
+
+        const cardsDue = parseInt(
+            document.querySelector('.DeckStats__cardsDue').textContent,
+            10,
+        );
+
+        if (isNaN(totalCards) || totalCards === 0) {
+            window.alert(
+                'Add cards to this deck before starting a study session.',
+            );
+        } else if (isNaN(cardsDue) || cardsDue === 0) {
+            window.alert('There are no cards due to study today.');
+        } else {
+            window.location.href = `study.html?deckId=${deckId}`;
+        }
+    });
 }
 
 async function loadDeckInfo(id) {
-    const breadcrumbText = document.querySelector('.Breadcrumb__text');
+    const breadcrumbDeckName = document.querySelector('.Breadcrumb__deckName');
     const headerDeckName = document.querySelector('.DeckHeader__deckName');
     const headerDeckDesc = document.querySelector('.DeckHeader__deckDesc');
 
@@ -45,7 +72,7 @@ async function loadDeckInfo(id) {
         }
 
         const data = await res.json();
-        breadcrumbText.textContent = data.name;
+        breadcrumbDeckName.textContent = data.name;
         headerDeckName.textContent = data.name;
         headerDeckDesc.textContent = data.description;
 

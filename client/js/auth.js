@@ -13,3 +13,5 @@ export const clearAccessToken = () => {
 };
 
 export const isLoggedIn = () => !!authState.accessToken;
+
+//TODO: save token into sessionStorage
