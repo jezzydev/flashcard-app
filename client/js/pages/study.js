@@ -93,7 +93,6 @@ async function loadDeckStats(id) {
             totalCards.textContent = '--';
             cardsDue.textContent = '--';
             retentionRate.textContent = '--';
-            progressTotal.textContent = '0';
             totalDue.textContent = '0';
             dayStreak.textContent = '0';
             return;
@@ -288,13 +287,6 @@ ratingButtons.forEach((b) =>
             document.querySelector('.Flashcard').dataset.cardId,
         );
 
-        const card = cardsToStudy.find((c) => c.id === cardId);
-        card.rating = rating;
-
-        const cardsReviewed = cardsToStudy.filter(
-            (c) => c.rating !== undefined,
-        );
-
         try {
             const res = await api.post(
                 `/api/study/sessions/${studySessionId}/review`,
@@ -313,6 +305,13 @@ ratingButtons.forEach((b) =>
                 showFlashcardSectionMsg(resError.message, true);
                 return;
             }
+
+            const card = cardsToStudy.find((c) => c.id === cardId);
+            card.rating = rating;
+
+            const cardsReviewed = cardsToStudy.filter(
+                (c) => c.rating !== undefined,
+            );
 
             updateProgressAndStats(
                 rating,

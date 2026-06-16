@@ -56,7 +56,7 @@ export const isValidDescription = (description) => {
 };
 
 export const isValidDeck = (deck, isNew = true) => {
-    if (isNew || deck.Name !== undefined) isValidName(deck.name);
+    if (isNew || deck.name !== undefined) isValidName(deck.name);
     if (deck.description !== undefined) isValidDescription(deck.description);
     return true;
 };

@@ -21,7 +21,7 @@ router.get('/stats', async (req, res, next) => {
         );
 
         if (cardResult.rows.length === 0) {
-            return res.status(400).json({ message: 'User not found.' });
+            return res.status(404).json({ message: 'Deck not found.' });
         }
 
         const streakResult = await pool.query(
@@ -72,8 +72,20 @@ router.get('/:id/cards', async (req, res, next) => {
         const deckId = req.params.id;
         isValidDeckId(deckId);
 
+        const deckResult = await pool.query(
+            'SELECT id FROM decks WHERE id = $1 AND user_id = $2',
+            [deckId, req.user.sub],
+        );
+
+        if (deckResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Deck not found.' });
+        }
+
         const result = await pool.query(
-            `SELECT * FROM cards WHERE deck_id = $1 ORDER BY created_at, id;`,
+            `SELECT c.* 
+            FROM cards c
+            WHERE c.deck_id = $1 
+            ORDER BY c.created_at, c.id;`,
             [deckId],
         );
 
@@ -89,11 +101,21 @@ router.get('/:id/study', async (req, res, next) => {
         const deckId = req.params.id;
         isValidDeckId(deckId);
 
+        const deckResult = await pool.query(
+            'SELECT id FROM decks WHERE id = $1 AND user_id = $2',
+            [deckId, req.user.sub],
+        );
+
+        if (deckResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Deck not found.' });
+        }
+
         const result = await pool.query(
-            `SELECT * FROM cards 
-            WHERE deck_id = $1
-            AND due_date <= now()
-            ORDER BY due_date, created_at
+            `SELECT c.* 
+            FROM cards c
+            WHERE c.deck_id = $1
+            AND c.due_date <= now()
+            ORDER BY c.due_date, c.created_at
             LIMIT 20;`,
             [deckId],
         );
@@ -119,12 +141,13 @@ router.get('/:id/stats', async (req, res, next) => {
             LEFT JOIN cards c ON d.id = c.deck_id
             LEFT JOIN session_reviews rvw ON c.id = rvw.card_id
             WHERE d.id = $1
+            AND d.user_id = $2
             GROUP BY d.id; `,
-            [deckId],
+            [deckId, user.sub],
         );
 
         if (cardResult.rows.length === 0) {
-            return res.status(400).json({ message: 'Deck not found.' });
+            return res.status(404).json({ message: 'Deck not found.' });
         }
 
         const streakResult = await pool.query(
@@ -164,8 +187,9 @@ router.get('/:id', async (req, res, next) => {
             FROM decks d 
             LEFT JOIN cards c ON d.id = c.deck_id 
             WHERE d.id = $1 
+            AND d.user_id = $2
             GROUP BY d.id;`,
-            [deckId],
+            [deckId, req.user.sub],
         );
 
         if (result.rows.length === 0) {
@@ -187,9 +211,15 @@ router.post('/:id/cards', async (req, res, next) => {
         isValidCard(card);
 
         const result = await pool.query(
-            `INSERT INTO cards (deck_id, front, back) VALUES ($1, $2, $3) RETURNING *;`,
-            [deckId, card.front, card.back],
+            `INSERT INTO cards (deck_id, front, back) 
+            SELECT $1, $2, $3 
+            FROM decks WHERE id = $1 AND user_id = $4 RETURNING *;`,
+            [deckId, card.front, card.back, req.user.sub],
         );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Deck not found.' });
+        }
 
         res.status(201).json({
             message: 'New card created.',
@@ -234,21 +264,19 @@ router.put('/:id', async (req, res, next) => {
         isValidDeck(deck, false);
 
         const columns = Object.keys(deck);
-        const values = Object.values(deck);
 
         if (columns.length === 0) {
             return res.json({ message: 'Nothing to update.' });
         }
 
-        const setClause = columns
-            .map((col, i) => `${col} = $${i + 2}`)
-            .join(', ');
         const result = await pool.query(
             `UPDATE decks 
-            SET ${setClause}
+            SET name = $3,
+                description = $4
             WHERE id = $1 
+            AND user_id = $2
             RETURNING *;`,
-            [deckId, ...values],
+            [deckId, req.user.sub, deck.name, deck.description],
         );
 
         if (result.rows.length === 0) {
@@ -270,8 +298,8 @@ router.delete('/:id', async (req, res, next) => {
         isValidDeckId(deckId);
 
         const result = await pool.query(
-            `DELETE FROM decks WHERE id = $1 RETURNING *;`,
-            [deckId],
+            `DELETE FROM decks WHERE id = $1 AND user_id = $2 RETURNING *;`,
+            [deckId, req.user.sub],
         );
 
         if (result.rows.length === 0) {

@@ -192,7 +192,10 @@ router.post('/logout', async (req, res, next) => {
         const refreshToken = req.cookies?.refreshToken;
 
         if (refreshToken) {
-            const decoded = jwt.decode(refreshToken);
+            const decoded = await jwt.verify(
+                refreshToken,
+                process.env.JWT_REFRESH_SECRET,
+            );
 
             if (decoded?.sub) {
                 await revokeAllUserTokens(decoded.sub);

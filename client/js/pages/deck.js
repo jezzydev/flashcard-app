@@ -308,7 +308,7 @@ addCardSubmitBtn.addEventListener('click', async (e) => {
 
             if (!res.ok) {
                 const resError = await res.json();
-                formError.textContent = res.message;
+                formError.textContent = resError.message;
                 formError.classList.add('show');
                 return;
             }
@@ -363,6 +363,8 @@ editCardSubmitBtn.addEventListener('click', async (e) => {
     const editCardAnswer = document.getElementById('edit-card-back');
     const editCardAnswerError = document.getElementById('edit-card-back-error');
 
+    const formError = document.getElementById('edit-card-form-error');
+
     const isValidQuestion = validateQuestion(
         editCardQuestion,
         editCardQuestionError,
@@ -378,9 +380,6 @@ editCardSubmitBtn.addEventListener('click', async (e) => {
 
             if (!res.ok) {
                 const resError = await res.json();
-                const formError = document.getElementById(
-                    'edit-card-form-error',
-                );
                 formError.textContent = resError.message;
                 formError.classList.add('show');
                 return;

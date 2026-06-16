@@ -20,6 +20,17 @@ router.post('/sessions/:id/review', async (req, res, next) => {
         isValidCardId(review.card_id);
         isValidCardRating(review.rating);
 
+        const sessionResult = await pool.query(
+            `SELECT id FROM study_sessions WHERE id = $1 AND user_id = $2`,
+            [sessionId, req.user.sub],
+        );
+
+        if (sessionResult.rows.length === 0) {
+            return res
+                .status(404)
+                .json({ message: 'Study session not found.' });
+        }
+
         const cardResult = await pool.query(
             'SELECT * FROM cards WHERE id = $1;',
             [review.card_id],
@@ -102,9 +113,19 @@ router.post('/sessions', async (req, res, next) => {
 //Mark session as complete
 router.put('/sessions/:id/complete', async (req, res, next) => {
     try {
-        const userId = req.user.sub;
         const sessionId = req.params.id;
         isValidStudySessionId(sessionId);
+
+        const sessionResult = await pool.query(
+            'SELECT id FROM study_sessions WHERE id = $1 AND user_id = $2',
+            [sessionId, req.user.sub],
+        );
+
+        if (sessionResult.rows.length === 0) {
+            return res
+                .status(404)
+                .json({ message: 'Study session not found.' });
+        }
 
         const result = await pool.query(
             `WITH reviews AS (SELECT session_id, count(*) as cards_reviewed, 
