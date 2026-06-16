@@ -29,27 +29,28 @@ async function init() {
     studyBtn.href = `study.html/deckId=${deckId}`;
     studyBtn.addEventListener('click', (e) => {
         e.preventDefault();
-
-        const totalCards = parseInt(
-            document.querySelector('.DeckStats__totalCards').textContent,
-            10,
-        );
-
-        const cardsDue = parseInt(
-            document.querySelector('.DeckStats__cardsDue').textContent,
-            10,
-        );
-
-        if (isNaN(totalCards) || totalCards === 0) {
-            window.alert(
-                'Add cards to this deck before starting a study session.',
-            );
-        } else if (isNaN(cardsDue) || cardsDue === 0) {
-            window.alert('There are no cards due to study today.');
-        } else {
-            window.location.href = `study.html?deckId=${deckId}`;
-        }
+        window.location.href = `study.html?deckId=${deckId}`;
     });
+
+    const totalCards = parseInt(
+        document.querySelector('.DeckStats__totalCards').textContent,
+        10,
+    );
+
+    const cardsDue = parseInt(
+        document.querySelector('.DeckStats__cardsDue').textContent,
+        10,
+    );
+
+    if (
+        isNaN(totalCards) ||
+        totalCards === 0 ||
+        isNaN(cardsDue) ||
+        cardsDue === 0
+    ) {
+        studyBtn.setAttribute('aria-disabled', true);
+        studyBtn.classList.add('disabled');
+    }
 }
 
 async function loadDeckInfo(id) {

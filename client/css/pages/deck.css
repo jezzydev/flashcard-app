@@ -1,5 +1,15 @@
 .Deck__studyBtn {
     text-decoration: none;
+
+    &.disabled {
+        pointer-events: none;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    &[aria-disabled='true']:focus {
+        outline: none;
+    }
 }
 
 .Stats__container.DeckStats {
