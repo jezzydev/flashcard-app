@@ -1,10 +1,12 @@
 import { requireAuth } from '../auth-init.js';
 import api from '../api.js';
+import * as auth from '../auth.js';
 import * as util from '../utils.js';
 
 let deckId;
 let cardsToStudy = [];
 let studySessionId = -1;
+let pageErrorShown = false;
 
 async function init() {
     const token = await requireAuth();
@@ -24,9 +26,15 @@ async function init() {
     //load page content
     setupBackToDeckLinks(deckId);
     await loadDeckInfo(deckId);
+    if (pageErrorShown) return;
+
     await loadDeckStats(deckId);
     await loadDueCards(deckId);
-    await startStudySession(deckId);
+
+    //only create a session if there is actually something to study
+    if (cardsToStudy.length > 0) {
+        await startStudySession(deckId);
+    }
 }
 
 async function loadDeckInfo(id) {
@@ -155,13 +163,18 @@ function loadNextQuestion(cards) {
         document.querySelector('.Flashcard').hidden = false;
         document.querySelector('.Flashcard__sectionMsg').hidden = true;
         enableAnswerButton();
+        return;
+    }
+
+    document.querySelector('.Flashcard').hidden = true;
+    disableAnswerButton();
+    disableRatingbuttons();
+
+    if (cards.length === 0) {
+        //no due cards at all; no session was created
+        showFlashcardSectionMsg('Nothing to study');
     } else {
-        //nothing to review
-        document.querySelector('.Flashcard').hidden = true;
-        showFlashcardSectionMsg('No cards due today');
-        disableAnswerButton();
-        disableRatingbuttons();
-        showSessionComplete();
+        completeStudySession();
     }
 }
 
@@ -193,9 +206,28 @@ function showAnswerFace() {
     ratingsCont.classList.add('show');
 }
 
-function showSessionComplete() {
+function showSessionComplete(reviewedCount, correctCount) {
     const panel = document.querySelector('.SessionCompletePanel');
+    const message = document.querySelector('.SessionComp__message');
+
+    const percent =
+        reviewedCount > 0 ? Math.round((correctCount / reviewedCount) * 100) : 0;
+    message.textContent = `You reviewed ${reviewedCount} card${reviewedCount === 1 ? '' : 's'}, with ${correctCount} correct (${percent}%).`;
+
     panel.classList.add('show');
+}
+
+async function completeStudySession() {
+    const reviewed = cardsToStudy.filter((c) => c.rating !== undefined);
+    const correct = reviewed.filter((c) => c.rating >= 3);
+
+    try {
+        await api.put(`/api/study/sessions/${studySessionId}/complete`);
+    } catch (error) {
+        console.error(`Fetch error: ${error}`);
+    }
+
+    showSessionComplete(reviewed.length, correct.length);
 }
 
 async function startStudySession(id) {
@@ -230,6 +262,7 @@ function setupBackToDeckLinks(id) {
 }
 
 function showPageError(msg) {
+    pageErrorShown = true;
     document.querySelector('.Page__content').hidden = true;
 
     const pageError = document.getElementById('study-page-error');
@@ -282,9 +315,10 @@ ratingButtons.forEach((b) =>
     b.addEventListener('click', async (e) => {
         e.preventDefault();
 
-        const rating = parseInt(e.currentTarget.dataset.rating);
+        const rating = parseInt(e.currentTarget.dataset.rating, 10);
         const cardId = parseInt(
             document.querySelector('.Flashcard').dataset.cardId,
+            10,
         );
 
         try {
@@ -358,12 +392,13 @@ function updateProgressAndStats(rating, reviewedCnt, correctCnt, totalDue) {
     const brCount = document.querySelector(
         `#breakdown-${br} .Breakdown__count`,
     );
-    brCount.textContent = parseInt(brCount.textContent) + 1;
+    brCount.textContent = parseInt(brCount.textContent, 10) + 1;
 
     const brRows = document.querySelectorAll('.Breakdown__row');
     brRows.forEach((row) => {
         const cnt = parseInt(
             row.querySelector('.Breakdown__count').textContent,
+            10,
         );
         const fill = row.querySelector('.Breakdown__barFill');
         const w = ((cnt / reviewedCnt) * 100).toFixed(0);
@@ -371,12 +406,40 @@ function updateProgressAndStats(rating, reviewedCnt, correctCnt, totalDue) {
     });
 }
 
+//Keyboard shortcuts
+const ratingKeyToButton = {
+    1: document.getElementById('rating-again-btn'),
+    2: document.getElementById('rating-hard-btn'),
+    3: document.getElementById('rating-good-btn'),
+    4: document.getElementById('rating-easy-btn'),
+};
+
+document.addEventListener('keydown', (e) => {
+    const answerHidden = !document
+        .querySelector('.RatingsContainer')
+        .classList.contains('show');
+
+    if (answerHidden && (e.key === ' ' || e.key === 'Enter')) {
+        if (answerBtn.disabled) return;
+        e.preventDefault();
+        answerBtn.click();
+        return;
+    }
+
+    const ratingBtn = ratingKeyToButton[e.key];
+    if (!answerHidden && ratingBtn && !ratingBtn.disabled) {
+        e.preventDefault();
+        ratingBtn.click();
+    }
+});
+
 //Logout
 const logoutBtn = document.querySelector('.Logout');
 logoutBtn.addEventListener('click', async (e) => {
     try {
         e.preventDefault();
         await api.logout();
+        auth.clearAccessToken();
         window.location.replace('index.html');
         return;
     } catch (error) {

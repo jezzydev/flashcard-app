@@ -22,6 +22,11 @@
         margin-bottom: 10px;
     }
 
+    .CardList__empty {
+        color: var(--text-muted);
+        margin-bottom: 10px;
+    }
+
     .CardItem {
         display: flex;
         flex-direction: column;
@@ -43,12 +48,19 @@
             font-size: 14.5px;
             font-weight: 700;
             margin-bottom: 6px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
         .CardItem__sub {
             font-size: 13px;
             color: var(--text-muted);
             line-height: 1.5;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
         }
 
         .CardItem__subLabel {

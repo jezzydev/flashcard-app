@@ -1,5 +1,6 @@
 import { requireAuth } from '../auth-init.js';
 import api from '../api.js';
+import * as auth from '../auth.js';
 import * as util from '../utils.js';
 
 let deckId;
@@ -25,9 +26,10 @@ async function init() {
     await loadDeckCards(deckId);
 
     const studyBtn = document.querySelector('.Deck__studyBtn');
-    studyBtn.href = `study.html/deckId=${deckId}`;
+    studyBtn.href = `study.html?deckId=${deckId}`;
     studyBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        if (studyBtn.classList.contains('disabled')) return;
         window.location.href = `study.html?deckId=${deckId}`;
     });
 
@@ -67,6 +69,7 @@ async function loadDeckInfo(id) {
                 resError.message || `HTTP Error! Status: ${res.status}`,
             );
 
+            document.querySelector('.Page__loading').hidden = true;
             showPageError(resError.message);
             return;
         }
@@ -104,6 +107,7 @@ async function loadDeckStats(id) {
             totalCards.textContent = '--';
             cardsDue.textContent = '--';
             retentionRate.textContent = '--';
+            retentionRate.classList.remove('Good', 'Warn', 'Bad');
             dayStreak.textContent = '--';
             return;
         }
@@ -113,11 +117,22 @@ async function loadDeckStats(id) {
         cardsDue.textContent = data.stats.due_today;
         retentionRate.textContent = data.stats.retention_rate + '%';
         dayStreak.textContent = data.stats.streak;
+
+        retentionRate.classList.remove('Good', 'Warn', 'Bad');
+        const rate = Number(data.stats.retention_rate);
+        if (rate >= 70) {
+            retentionRate.classList.add('Good');
+        } else if (rate >= 40) {
+            retentionRate.classList.add('Warn');
+        } else {
+            retentionRate.classList.add('Bad');
+        }
     } catch (error) {
         console.error(`Fetch error: ${error}`);
         totalCards.textContent = '--';
         cardsDue.textContent = '--';
         retentionRate.textContent = '--';
+        retentionRate.classList.remove('Good', 'Warn', 'Bad');
         dayStreak.textContent = '--';
     }
 }
@@ -146,6 +161,12 @@ async function loadDeckCards(id) {
         );
 
         cardsCount.textContent = `${cards.length} CARDS`;
+
+        clearEmptyCardsPrompt();
+        if (cards.length === 0) {
+            showEmptyCardsPrompt();
+        }
+
         cards.forEach((card) => {
             const fragment = createCardItem(card, cardTemplate);
             cardsList.append(fragment);
@@ -272,6 +293,20 @@ function showCardsSectionError(msg) {
     div.append(cardsError);
     cardsList.innerHTML = '';
     cardsList.append(div);
+}
+
+function showEmptyCardsPrompt() {
+    const cardsList = document.querySelector('.CardsList');
+    const prompt = document.createElement('p');
+    prompt.classList.add('CardList__empty');
+    prompt.id = 'empty-cards-prompt';
+    prompt.textContent =
+        "You don't have any cards yet. Add your first card to get started!";
+    cardsList.append(prompt);
+}
+
+function clearEmptyCardsPrompt() {
+    document.getElementById('empty-cards-prompt')?.remove();
 }
 
 function closeDropdownMenu(card) {
@@ -515,12 +550,17 @@ util.triggerCloseModal(modalCancelButtons);
 const modalCloseButtons = document.querySelectorAll('.Modal__closeBtn');
 util.triggerCloseModal(modalCloseButtons);
 
+const modalOverlays = document.querySelectorAll('.Modal__overlay');
+util.triggerCloseOnOverlayClick(modalOverlays);
+util.triggerCloseOnEscape(modalOverlays);
+
 //Logout
 const logoutBtn = document.querySelector('.Logout');
 logoutBtn.addEventListener('click', async (e) => {
     try {
         e.preventDefault();
         await api.logout();
+        auth.clearAccessToken();
         window.location.replace('index.html');
         return;
     } catch (error) {

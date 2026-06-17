@@ -5,6 +5,14 @@ import * as auth from '../auth.js';
 const loginForm = document.querySelector('.LoginForm');
 const togglePw = document.querySelector('.TogglePassword');
 
+if (auth.getAccessToken()) {
+    window.location.replace('./dashboard.html');
+}
+
+if (new URLSearchParams(window.location.search).get('registered') === '1') {
+    document.getElementById('registered-toast').classList.add('show');
+}
+
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -52,7 +60,7 @@ togglePw.addEventListener('click', () => {
 });
 
 function validateEmail(input, error) {
-    const valid = /^[^\s@]+@[^\s@]+.[^\s@]+$/.test(input.value);
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
 
     if (!valid) {
         util.showErrorMsg(input, error, 'Enter a valid email address.');

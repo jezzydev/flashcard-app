@@ -55,6 +55,10 @@
         color: var(--color-green-500);
     }
 
+    .Warn {
+        color: var(--color-yellow-500);
+    }
+
     .Bad {
         color: var(--color-red-500);
     }

@@ -40,7 +40,7 @@ class ApiClient {
 
             //retry original request with the new access token
             return fetch(url, {
-                ...options,
+                ...config,
                 headers: {
                     ...headers,
                     Authorization: `Bearer ${newToken}`,
@@ -93,8 +93,6 @@ class ApiClient {
 
 const API_BASE_URL = '';
 
-const api = new ApiClient(`${API_BASE_URL}`, {
-    Authorization: 'Bearer AUTH_TOKEN',
-});
+const api = new ApiClient(API_BASE_URL);
 
 export default api;

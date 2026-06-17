@@ -49,8 +49,9 @@ regForm.addEventListener('submit', async (e) => {
             if (!res.ok) {
                 const resError = await res.json();
                 const formError = document.getElementById('reg-form-error');
-                formError.textContent = error.message;
+                formError.textContent = resError.message;
                 formError.classList.add('show');
+                return;
             }
 
             const data = await res.json();
@@ -60,7 +61,7 @@ regForm.addEventListener('submit', async (e) => {
                 const toast = document.getElementById('success-toast');
                 toast.classList.add('show');
                 setTimeout(() => {
-                    window.location.replace('./index.html');
+                    window.location.replace('./index.html?registered=1');
                     return;
                 }, 2000);
             }
@@ -109,7 +110,7 @@ function validateEmail(input, error) {
         return false;
     }
 
-    const valid = /^[^\s@]+@[^\s@]+.[^\s@]+$/.test(trimmed);
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
     if (!valid) {
         util.showErrorMsg(input, error, 'Enter a valid email address.');
         return false;

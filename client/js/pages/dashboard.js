@@ -1,5 +1,6 @@
 import { requireAuth } from '../auth-init.js';
 import api from '../api.js';
+import * as auth from '../auth.js';
 import * as util from '../utils.js';
 
 async function init() {
@@ -32,6 +33,8 @@ async function loadStats() {
             totalDecks.textContent = '--';
             cardsDue.textContent = '--';
             dayStreak.textContent = '--';
+            document.querySelector('.Page__loading').hidden = true;
+            document.querySelector('.Page__content').hidden = false;
             return;
         }
 
@@ -44,10 +47,11 @@ async function loadStats() {
         document.querySelector('.Page__content').hidden = false;
     } catch (error) {
         console.error(`Fetch error: ${error}`);
-        document.querySelector('.Page__loading').hidden = true;
         totalDecks.textContent = '--';
         cardsDue.textContent = '--';
         dayStreak.textContent = '--';
+        document.querySelector('.Page__loading').hidden = true;
+        document.querySelector('.Page__content').hidden = false;
     }
 }
 
@@ -65,6 +69,10 @@ async function loadDecks() {
         }
 
         const decks = await res.json();
+
+        if (decks.length === 0) {
+            showEmptyDecksPrompt();
+        }
 
         //render decks
         const addDeck = document.querySelector('.DeckCard--addDeck');
@@ -183,6 +191,20 @@ function showDecksSectionError(msg) {
     deckGrid.before(div);
 }
 
+function showEmptyDecksPrompt() {
+    const deckGrid = document.querySelector('.DeckGrid');
+    const prompt = document.createElement('p');
+    prompt.classList.add('CardList__empty');
+    prompt.id = 'empty-decks-prompt';
+    prompt.textContent =
+        "You don't have any decks yet. Create your first deck to get started!";
+    deckGrid.before(prompt);
+}
+
+function clearEmptyDecksPrompt() {
+    document.getElementById('empty-decks-prompt')?.remove();
+}
+
 //Add Deck Modal
 const addDeckCardBtn = document.querySelector('.DeckCard__addDeckBtn');
 const addDeckBtn = document.getElementById('add-deck-btn');
@@ -217,12 +239,25 @@ addDeckSubmitBtn.addEventListener('click', async (e) => {
                 return;
             }
 
-            //close modal and reload decks list
+            const data = await res.json();
+
+            //close modal and prepend the new deck card without a full reload
             util.closeParentModal(addDeckSubmitBtn);
+            clearEmptyDecksPrompt();
+
+            const newDeck = {
+                ...data.deck,
+                total_cards: 0,
+                due_today: 0,
+            };
+            const deckCardTemplate = await util.fetchTemplate(
+                'templates.html',
+                'deck-card-template',
+            );
+            const fragment = createDeckCardItem(newDeck, deckCardTemplate);
+            document.querySelector('.DeckGrid').prepend(fragment);
 
             await loadStats();
-            clearDecks();
-            await loadDecks();
         } catch (error) {
             console.error(`Fetch error: ${error}`);
             formError.textContent = 'Failed to create deck.';
@@ -405,12 +440,17 @@ util.triggerCloseModal(modalCancelButtons);
 const modalCloseButtons = document.querySelectorAll('.Modal__closeBtn');
 util.triggerCloseModal(modalCloseButtons);
 
+const modalOverlays = document.querySelectorAll('.Modal__overlay');
+util.triggerCloseOnOverlayClick(modalOverlays);
+util.triggerCloseOnEscape(modalOverlays);
+
 //Logout
 const logoutBtn = document.querySelector('.Logout');
 logoutBtn.addEventListener('click', async (e) => {
     try {
         e.preventDefault();
         await api.logout();
+        auth.clearAccessToken();
         window.location.replace('index.html');
         return;
     } catch (error) {

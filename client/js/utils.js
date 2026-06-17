@@ -51,3 +51,20 @@ export const closeParentModal = (elem) => {
     const modal = elem.closest('.Modal__overlay');
     modal.classList.remove('Open');
 };
+
+export const triggerCloseOnOverlayClick = (overlays) => {
+    overlays.forEach((overlay) => {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.classList.remove('Open');
+            }
+        });
+    });
+};
+
+export const triggerCloseOnEscape = (overlays) => {
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        overlays.forEach((overlay) => overlay.classList.remove('Open'));
+    });
+};
