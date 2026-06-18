@@ -33,6 +33,11 @@ export default defineConfig(({ command, mode }) => {
                 //     admin: resolve(__dirname, 'admin.html'),
                 // },
             },
+            // By default Vite outputs to dist/ relative to where vite.config.js lives. If your config is at the root, dist/ is at /app/dist/.
+            // If your server/index.js is at server/, then your __dirname is /app/server/.
+            // If root: 'client' (above) is set without a matching outDir, Vite outputs to client/dist/ — but your Express is looking at /app/dist/.
+            outDir: '../dist', // resolves to project root /dist
+            emptyOutDir: true, // needed when outDir is outside root - Vite warns otherwise
         },
         server: {
             proxy: {

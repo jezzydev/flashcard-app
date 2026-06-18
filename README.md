@@ -64,8 +64,8 @@ Users should be able to:
 
 ### Links
 
-- Live Site: [Add URL here]
-- GitHub Repo: [Add URL here]
+- Live Site: [flashcard-app-railawy](flashcard-app-production-d409.up.railway.app)
+- GitHub Repo: [flashcard-app](https://github.com/jezzydev/flashcard-app)
 
 ---
 
@@ -158,7 +158,7 @@ Used Claude (Anthropic) throughout this project as a senior engineering mentor �
 ```bash
 # Clone the repo
 git clone <repo-url>
-cd flashcard-srs-app
+cd flashcard-app
 
 # Install dependencies
 npm install
@@ -168,10 +168,10 @@ cp .env.example .env
 # Fill in your values (see Environment Variables below)
 
 # Create the database
-createdb flashcard_srs
+createdb flashcard_app
 
 # Run schema
-psql -d flashcard_srs -f schema.sql
+psql -d flashcard_app -f schema.sql
 
 # Start dev server (Vite + Express via concurrently)
 npm run dev
@@ -182,7 +182,7 @@ App runs at `http://localhost:5173`. API runs at `http://localhost:3000`. Vite p
 ### Environment Variables
 
 ```
-DATABASE_URL=postgresql://localhost:5432/flashcard_srs
+DATABASE_URL=postgresql://localhost:5432/flashcard_app
 JWT_SECRET=your-secret-here
 JWT_REFRESH_SECRET=your-refresh-secret-here
 ACCESS_TOKEN_EXPIRY=15m
@@ -220,5 +220,5 @@ NODE_ENV=development
 
 ## Author
 
-- Frontend Mentor — [@yourusername](https://www.frontendmentor.io/profile/jezzydev)
-- GitHub — [@yourusername](https://github.com/jezzydev)
+- Frontend Mentor — [@yjezzydev](https://www.frontendmentor.io/profile/jezzydev)
+- GitHub — [@yjezzydev](https://github.com/jezzydev)
