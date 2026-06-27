@@ -134,7 +134,7 @@ Used Claude (Anthropic) throughout this project as a senior engineering mentor �
 
 **How it was used:**
 
-- Generate UI design for login, registration, dashboard, deck and study pages, ensuring they are consistent with the original visual design from Frontend Mentor Flashcard app challenge.
+- Generate UI visual design for login, registration, dashboard, deck and study pages, ensuring they are consistent with the original visual design from Frontend Mentor Flashcard app challenge.
 - Architecture review: JWT storage strategy, cookie path scoping, session lifecycle design
 - Catching bugs before they became runtime issues (missing `client.release()` causing connection pool leaks, inverted revocation condition, logout silently skipping revocation when the access token was absent)
 - Explaining the _why_ behind conventions, not just the what — event loop mechanics, ES module scoping rules, browser security threat models
@@ -220,5 +220,5 @@ NODE_ENV=development
 
 ## Author
 
-- Frontend Mentor — [@yjezzydev](https://www.frontendmentor.io/profile/jezzydev)
-- GitHub — [@yjezzydev](https://github.com/jezzydev)
+- Frontend Mentor — [@jezzydev](https://www.frontendmentor.io/profile/jezzydev)
+- GitHub — [@jezzydev](https://github.com/jezzydev)
