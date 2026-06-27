@@ -64,7 +64,7 @@ Users should be able to:
 
 ### Links
 
-- Live Site: [flashcard-app-railawy](flashcard-app-production-d409.up.railway.app)
+- Live Site: [flashcard-app-railawy](https://flashcard-app-production-d409.up.railway.app/)
 - GitHub Repo: [flashcard-app](https://github.com/jezzydev/flashcard-app)
 
 ---
