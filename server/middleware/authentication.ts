@@ -1,8 +1,22 @@
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { AuthenticationError, ERROR_CODES } from '../utils/errors.js';
 import pool from '../db/pool.js';
+import { Request, Response, NextFunction } from 'express';
+import { JWT_ACCESS_SECRET } from '../config/env.js';
 
-export const authenticateToken = async (req, res, next) => {
+declare global {
+    namespace Express {
+        interface Request {
+            user?: JwtPayload;
+        }
+    }
+}
+
+export const authenticateToken = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const token = req.get('Authorization')?.split(' ')[1];
 
@@ -13,12 +27,17 @@ export const authenticateToken = async (req, res, next) => {
             );
         }
 
-        let user;
+        let payload: JwtPayload = {};
+
         //verify token
         try {
-            user = await jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+            const decoded = await jwt.verify(token, JWT_ACCESS_SECRET);
+
+            if (typeof decoded === 'object' && decoded !== null) {
+                payload = decoded;
+            }
         } catch (error) {
-            if (error.name === 'TokenExpiredError') {
+            if (error instanceof Error && error.name === 'TokenExpiredError') {
                 throw new AuthenticationError(
                     'Expired token.',
                     ERROR_CODES.EXPIRED_TOKEN,
@@ -31,30 +50,37 @@ export const authenticateToken = async (req, res, next) => {
         //verify token version
         const result = await pool.query(
             'SELECT token_version FROM users WHERE id = $1;',
-            [user.sub],
+            [payload.sub],
         );
 
         if (
             result.rows.length === 0 ||
-            result.rows[0].token_version !== user.token_version
+            result.rows[0].token_version !== payload.token_version
         ) {
             throw new AuthenticationError('Invalid token.');
         }
 
-        req.user = user;
+        req.user = payload;
         next();
     } catch (error) {
         next(error);
     }
 };
 
-export const softAuthenticate = async (req, res, next) => {
+export const softAuthenticate = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const token = req.get('Authorization')?.split(' ')[1];
 
         if (token) {
-            const user = await jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-            req.user = user;
+            const decoded = await jwt.verify(token, JWT_ACCESS_SECRET);
+
+            if (typeof decoded === 'object' && decoded !== null) {
+                req.user = decoded as JwtPayload;
+            }
         }
     } catch (error) {
         //invalid, expired or missing token is fine.

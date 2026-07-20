@@ -1,6 +1,7 @@
 import { ValidationError, ERROR_CODES } from './errors.js';
+import { CreateUser } from '../types/index.js';
 
-export const isValidEmail = (email, isNew = false) => {
+export const isValidEmail = (email: string, isNew = false): boolean => {
     const field = 'email';
 
     if (!email)
@@ -38,7 +39,7 @@ export const isValidEmail = (email, isNew = false) => {
     return true;
 };
 
-export const isValidPassword = (password, isNew = false) => {
+export const isValidPassword = (password: string, isNew = false): boolean => {
     const field = 'password';
 
     if (!password)
@@ -76,7 +77,7 @@ export const isValidPassword = (password, isNew = false) => {
     return true;
 };
 
-export const isValidName = (name) => {
+export const isValidName = (name: string): boolean => {
     const field = 'name';
 
     if (!name)
@@ -104,7 +105,7 @@ export const isValidName = (name) => {
     return true;
 };
 
-export const isValidUser = (user) => {
+export const isValidUser = (user: CreateUser): boolean => {
     isValidEmail(user.email, true);
     isValidPassword(user.password, true);
     isValidName(user.name);

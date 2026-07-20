@@ -1,0 +1,32 @@
+{
+    "compilerOptions": {
+        /* Language & Module */
+        "target": "ES2022",
+        "module": "NodeNext", //this is what makes Node correctly resolve your compiled ESM output
+        "moduleResolution": "NodeNext", //this is what makes Node correctly resolve your compiled ESM output
+        "lib": ["ES2022"],
+
+        /* Output */
+        "outDir": "dist/server", //js files are outputted here
+        "rootDir": "server",
+        "sourceMap": true, //when Railway logs a stack trace from your compiled dist/server/index.js, source maps let you trace it back to the actual .ts line. Skip this and you're debugging production errors against compiled JS line numbers, which is miserable
+        "declaration": false, // you're not publishing this as a library for others to import, so you don't need .d.ts files generated. Turn this on later only if you ever extract shared types into a package.
+
+        /* Strictness — non-negotiable */
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "noImplicitOverride": true,
+        "noFallthroughCasesInSwitch": true,
+
+        /* Interop */
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true, //skips type-checking inside node_modules' own .d.ts files. Standard practice — you're not responsible for bugs in @types/express's type definitions, and checking them just slows your build for no benefit.
+
+        /* Safety nets */
+        "resolveJsonModule": true,
+        "isolatedModules": true //guards against a few TS features (like const enum) that don't transpile safely file-by-file. Good default hygiene, costs nothing
+    },
+    "include": ["server/**/*"],
+    "exclude": ["node_modules", "dist", "client"]
+}

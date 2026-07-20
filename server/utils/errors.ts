@@ -1,5 +1,9 @@
 class ErrorBase extends Error {
-    constructor(message, errorCode, status) {
+    constructor(
+        message: string,
+        public errorCode: string,
+        public status: number,
+    ) {
         super(message);
         this.name = this.constructor.name;
         this.errorCode = errorCode;
@@ -8,26 +12,30 @@ class ErrorBase extends Error {
 }
 
 class ValidationError extends ErrorBase {
-    constructor(message, field = '', errorCode = ERROR_CODES.VALIDATION_ERROR) {
+    constructor(
+        message: string,
+        public field: string = '',
+        errorCode = ERROR_CODES.VALIDATION_ERROR,
+    ) {
         super(message, errorCode, 400);
         this.field = field;
     }
 }
 
 class NotFoundError extends ErrorBase {
-    constructor(message, errorCode = ERROR_CODES.NOT_FOUND) {
+    constructor(message: string, errorCode = ERROR_CODES.NOT_FOUND) {
         super(message, errorCode, 404);
     }
 }
 
 class AuthenticationError extends ErrorBase {
-    constructor(message, errorCode = ERROR_CODES.INVALID_TOKEN) {
+    constructor(message: string, errorCode = ERROR_CODES.INVALID_TOKEN) {
         super(message, errorCode, 401);
     }
 }
 
 class AuthorizationError extends ErrorBase {
-    constructor(message, errorCode = ERROR_CODES.UNAUTHORIZED_ACCESS) {
+    constructor(message: string, errorCode = ERROR_CODES.UNAUTHORIZED_ACCESS) {
         super(message, errorCode, 403);
     }
 }

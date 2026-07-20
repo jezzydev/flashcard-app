@@ -47,11 +47,11 @@ app.use('/api', (req, res, next) => {
 
 // Serve frontend static files
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../dist')));
+    app.use(express.static(path.join(__dirname, '../dist/client')));
 
     // Catch-all - send index.html for any non-API route
     app.get('/{*path}', (req, res) => {
-        res.sendFile(path.join(__dirname, '../dist/index.html'));
+        res.sendFile(path.join(__dirname, '../dist/client/index.html'));
     });
 }
 
