@@ -1,8 +1,18 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { AuthenticationError, ERROR_CODES } from '../utils/errors.js';
-import pool from '../db/pool.js';
+import {
+    AuthenticationError,
+    AuthorizationError,
+    ERROR_CODES,
+} from '../utils/errors.js';
+import { query } from '../db/query.js';
 import { Request, Response, NextFunction } from 'express';
 import { JWT_ACCESS_SECRET } from '../config/env.js';
+import {
+    AuthenticatedRequest,
+    UserTokenVersion,
+    AuthPayload,
+    RefreshTokenPayload,
+} from '../types/index.js';
 
 declare global {
     namespace Express {
@@ -27,15 +37,13 @@ export const authenticateToken = async (
             );
         }
 
-        let payload: JwtPayload = {};
+        let authPayload: AuthPayload;
 
         //verify token
         try {
             const decoded = await jwt.verify(token, JWT_ACCESS_SECRET);
-
-            if (typeof decoded === 'object' && decoded !== null) {
-                payload = decoded;
-            }
+            assertJwtPayload(decoded);
+            authPayload = toAuthPayload(decoded);
         } catch (error) {
             if (error instanceof Error && error.name === 'TokenExpiredError') {
                 throw new AuthenticationError(
@@ -48,19 +56,16 @@ export const authenticateToken = async (
         }
 
         //verify token version
-        const result = await pool.query(
-            'SELECT token_version FROM users WHERE id = $1;',
-            [payload.sub],
+        const result = await query<UserTokenVersion>(
+            'SELECT id, email, token_version as tokenVersion FROM users WHERE id = $1;',
+            [authPayload.sub],
         );
 
-        if (
-            result.rows.length === 0 ||
-            result.rows[0].token_version !== payload.token_version
-        ) {
+        if (!result[0] || result[0].tokenVersion !== authPayload.tokenVersion) {
             throw new AuthenticationError('Invalid token.');
         }
 
-        req.user = payload;
+        req.user = authPayload;
         next();
     } catch (error) {
         next(error);
@@ -87,3 +92,56 @@ export const softAuthenticate = async (
     }
     next(); //always continue
 };
+
+export function assertAuthenticated(
+    req: Request,
+): asserts req is AuthenticatedRequest {
+    if (!req.user) {
+        throw new AuthorizationError('Unauthorized access.');
+    }
+}
+
+export function isJwtPayload(
+    payload: JwtPayload | string,
+): payload is JwtPayload {
+    return typeof payload !== 'string';
+}
+
+export function assertJwtPayload(
+    payload: JwtPayload | string,
+): asserts payload is JwtPayload {
+    if (typeof payload === 'string') {
+        throw new Error('Invalid payload.');
+    }
+}
+
+function toAuthPayload(decoded: JwtPayload): AuthPayload {
+    const { sub, email, name, tokenVersion } = decoded;
+    if (
+        sub === undefined ||
+        email === undefined ||
+        name === undefined ||
+        tokenVersion === undefined
+    ) {
+        throw new AuthenticationError('Incomplete token payload.');
+    }
+
+    return { sub, email, name, tokenVersion };
+}
+
+export function toRefreshTokenPayload(
+    decoded: JwtPayload,
+): RefreshTokenPayload {
+    const { sub, email, name, jti, exp } = decoded;
+    if (
+        sub === undefined ||
+        email === undefined ||
+        name === undefined ||
+        jti === undefined ||
+        exp === undefined
+    ) {
+        throw new AuthenticationError('Incomplete refresh token payload.');
+    }
+
+    return { sub, email, name, jti, exp };
+}

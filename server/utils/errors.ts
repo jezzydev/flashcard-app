@@ -6,8 +6,6 @@ class ErrorBase extends Error {
     ) {
         super(message);
         this.name = this.constructor.name;
-        this.errorCode = errorCode;
-        this.status = status;
     }
 }
 
@@ -18,7 +16,6 @@ class ValidationError extends ErrorBase {
         errorCode = ERROR_CODES.VALIDATION_ERROR,
     ) {
         super(message, errorCode, 400);
-        this.field = field;
     }
 }
 
@@ -55,6 +52,7 @@ const ERROR_CODES = {
 };
 
 export {
+    ErrorBase,
     ValidationError,
     NotFoundError,
     AuthenticationError,

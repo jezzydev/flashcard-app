@@ -1,7 +1,7 @@
 import { ValidationError, ERROR_CODES } from './errors.js';
 import { CreateUser } from '../types/index.js';
 
-export const isValidEmail = (email: string, isNew = false): boolean => {
+export function assertValidUserEmail(email: unknown): asserts email is string {
     const field = 'email';
 
     if (!email)
@@ -17,29 +17,35 @@ export const isValidEmail = (email: string, isNew = false): boolean => {
             field,
             ERROR_CODES.INVALID_TYPE,
         );
+}
 
-    if (isNew) {
-        const trimmed = email.trim();
-        if (trimmed.length > 255)
-            throw new ValidationError(
-                'Email must not exceed 255 characters.',
-                field,
-                ERROR_CODES.INVALID_LENGTH,
-            );
+export type ValidatedEmail = string & { readonly __brand: 'ValidatedEmail' };
 
-        const regex = /([^@\s]+)@([^@\s]+)\.([^@\s])+/;
-        if (!regex.test(trimmed))
-            throw new ValidationError(
-                'Email is invalid.',
-                field,
-                ERROR_CODES.INVALID_FORMAT,
-            );
-    }
+export function assertValidUserEmailForm(
+    email: string,
+): asserts email is ValidatedEmail {
+    const field = 'email';
+    const trimmed = email.trim();
 
-    return true;
-};
+    if (trimmed.length > 255)
+        throw new ValidationError(
+            'Email must not exceed 255 characters.',
+            field,
+            ERROR_CODES.INVALID_LENGTH,
+        );
 
-export const isValidPassword = (password: string, isNew = false): boolean => {
+    const regex = /([^@\s]+)@([^@\s]+)\.([^@\s])+/;
+    if (!regex.test(trimmed))
+        throw new ValidationError(
+            'Email is invalid.',
+            field,
+            ERROR_CODES.INVALID_FORMAT,
+        );
+}
+
+export function assertValidUserPassword(
+    password: unknown,
+): asserts password is string {
     const field = 'password';
 
     if (!password)
@@ -55,29 +61,35 @@ export const isValidPassword = (password: string, isNew = false): boolean => {
             field,
             ERROR_CODES.INVALID_TYPE,
         );
+}
 
-    if (isNew) {
-        if (password.length > 255 || password.length < 8)
-            throw new ValidationError(
-                'Password must be 8-255 characters.',
-                field,
-                ERROR_CODES.INVALID_LENGTH,
-            );
-
-        //At least 1 digit, 1 uppercase, 1 lowercase. Spaces and special characters are allowed.
-        const regex = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).+$/;
-        if (!regex.test(password))
-            throw new ValidationError(
-                'Password must have at least 1 digit, 1 uppercase and 1 lowercase character.',
-                field,
-                ERROR_CODES.INVALID_FORMAT,
-            );
-    }
-
-    return true;
+export type ValidatedPassword = string & {
+    readonly __brand: 'ValidatedPassword';
 };
 
-export const isValidName = (name: string): boolean => {
+export function assertValidUserPasswordForm(
+    password: string,
+): asserts password is ValidatedPassword {
+    const field = 'password';
+
+    if (password.length > 255 || password.length < 8)
+        throw new ValidationError(
+            'Password must be 8-255 characters.',
+            field,
+            ERROR_CODES.INVALID_LENGTH,
+        );
+
+    //At least 1 digit, 1 uppercase, 1 lowercase. Spaces and special characters are allowed.
+    const regex = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).+$/;
+    if (!regex.test(password))
+        throw new ValidationError(
+            'Password must have at least 1 digit, 1 uppercase and 1 lowercase character.',
+            field,
+            ERROR_CODES.INVALID_FORMAT,
+        );
+}
+
+export function assertValidUserName(name: unknown): asserts name is string {
     const field = 'name';
 
     if (!name)
@@ -101,13 +113,4 @@ export const isValidName = (name: string): boolean => {
             field,
             ERROR_CODES.INVALID_LENGTH,
         );
-
-    return true;
-};
-
-export const isValidUser = (user: CreateUser): boolean => {
-    isValidEmail(user.email, true);
-    isValidPassword(user.password, true);
-    isValidName(user.name);
-    return true;
-};
+}

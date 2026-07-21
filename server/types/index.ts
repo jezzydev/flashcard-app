@@ -1,4 +1,9 @@
-import { JwtPayload } from 'jsonwebtoken';
+import { Jwt, JwtPayload } from 'jsonwebtoken';
+import { Request } from 'express';
+
+export interface AuthenticatedRequest extends Request {
+    user: AuthPayload;
+}
 
 // ---- User ----
 export interface User {
@@ -12,7 +17,12 @@ export interface User {
 export type CreateUser = Pick<User, 'name' | 'email'> & { password: string };
 export type LoginUser = Pick<User, 'email'> & { password: string };
 export type UserTokenVersion = Pick<User, 'id' | 'email' | 'tokenVersion'>;
-export type BasicUserInfo = Pick<User, 'id' | 'name' | 'email'>;
+export type UserBasicInfo = Pick<User, 'id' | 'email' | 'name'>;
+export interface UserStats {
+    totalDecks: number;
+    dueToday: number;
+    streak: number;
+}
 
 // ---- Deck ----
 export interface Deck {
@@ -21,6 +31,22 @@ export interface Deck {
     name: string;
     description: string;
     createdAt: Date;
+}
+export type CreateDeck = Pick<Deck, 'name'> &
+    Partial<Pick<Deck, 'description'>>;
+export type UpdateDeck = Partial<CreateDeck>;
+
+export type DeckSummary = Pick<
+    Deck,
+    'id' | 'name' | 'description' | 'createdAt'
+> & { totalCards: number; dueToday: number };
+export type DeckBasicInfo = Pick<Deck, 'id' | 'name' | 'description'>;
+
+export interface DeckStats {
+    totalCards: number;
+    dueToday: number;
+    retentionRate: number;
+    streak: number;
 }
 
 // ---- Card ----
@@ -35,6 +61,9 @@ export interface Card {
     dueDate: Date;
     createdAt: Date;
 }
+export type CreateCard = Pick<Card, 'front' | 'back'>;
+export type UpdateCard = Partial<CreateCard>;
+export type CardBasicInfo = Pick<Card, 'id' | 'front' | 'back'>;
 
 // ---- Study Sessions ----
 export interface StudySession {
@@ -45,6 +74,10 @@ export interface StudySession {
     completedAt: Date;
     cardsReviewed: number;
     cardsCorrect: number;
+}
+
+export interface StudyDate {
+    studyDate: Date;
 }
 
 export interface SessionReview {
@@ -62,7 +95,7 @@ export interface RefreshToken {
     tokenHash: string;
     createdAt: Date;
     expiresAt: Date;
-    revokedAt: Date;
+    revokedAt?: Date;
 }
 
 declare module 'jsonwebtoken' {
@@ -72,3 +105,11 @@ declare module 'jsonwebtoken' {
         tokenVersion?: number;
     }
 }
+
+export type AuthPayload = Required<
+    Pick<JwtPayload, 'sub' | 'email' | 'name' | 'tokenVersion'>
+>;
+
+export type RefreshTokenKeys = 'sub' | 'email' | 'name' | 'jti' | 'exp';
+export type RefreshTokenPayload = Required<Pick<JwtPayload, RefreshTokenKeys>> &
+    Omit<JwtPayload, RefreshTokenKeys>;

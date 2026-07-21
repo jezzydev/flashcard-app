@@ -1,6 +1,7 @@
+import { CreateDeck, UpdateDeck } from '../types/index.js';
 import { ValidationError, ERROR_CODES } from './errors.js';
 
-export const isValidDeckId = (id) => {
+export function assertValidDeckId(id: unknown): asserts id is number {
     const field = 'id';
     const num = Number(id);
 
@@ -10,11 +11,9 @@ export const isValidDeckId = (id) => {
             field,
             ERROR_CODES.INVALID,
         );
+}
 
-    return true;
-};
-
-export const isValidName = (name) => {
+export function assertValidDeckName(name: unknown): asserts name is string {
     const field = 'name';
 
     if (!name)
@@ -38,25 +37,29 @@ export const isValidName = (name) => {
             field,
             ERROR_CODES.INVALID_LENGTH,
         );
+}
 
-    return true;
-};
-
-export const isValidDescription = (description) => {
+export function assertValidDeckDescription(
+    description: unknown,
+): asserts description is string {
     const field = 'description';
 
-    if (description !== null && typeof description !== 'string')
+    if (typeof description !== 'string')
         throw new ValidationError(
             'Description must be a string.',
             field,
             ERROR_CODES.INVALID_TYPE,
         );
+}
 
-    return true;
-};
+export function assertValidCreateDeck(deck: CreateDeck): void {
+    assertValidDeckName(deck.name);
+    if (deck.description !== undefined)
+        assertValidDeckDescription(deck.description);
+}
 
-export const isValidDeck = (deck, isNew = true) => {
-    if (isNew || deck.name !== undefined) isValidName(deck.name);
-    if (deck.description !== undefined) isValidDescription(deck.description);
-    return true;
-};
+export function assertValidUpdateDeck(deck: UpdateDeck): void {
+    if (deck.name !== undefined) assertValidDeckName(deck.name);
+    if (deck.description !== undefined)
+        assertValidDeckDescription(deck.description);
+}
