@@ -1,16 +1,9 @@
 import { CreateDeck, UpdateDeck } from '../types/index.js';
 import { ValidationError, ERROR_CODES } from './errors.js';
+import { assertValidId } from './validationHelper.js';
 
 export function assertValidDeckId(id: unknown): asserts id is number {
-    const field = 'id';
-    const num = Number(id);
-
-    if (isNaN(num) || !Number.isInteger(num) || num <= 0)
-        throw new ValidationError(
-            'Invalid deck id.',
-            field,
-            ERROR_CODES.INVALID,
-        );
+    assertValidId(id, 'deckId');
 }
 
 export function assertValidDeckName(name: unknown): asserts name is string {

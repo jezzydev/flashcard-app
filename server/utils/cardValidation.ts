@@ -1,16 +1,9 @@
 import { ValidationError, ERROR_CODES } from './errors.js';
 import { CreateCard, UpdateCard } from '../types/index.js';
+import { assertValidId } from './validationHelper.js';
 
 export function assertValidCardId(id: unknown): asserts id is number {
-    const field = 'id';
-    const num = Number(id);
-
-    if (isNaN(num) || !Number.isInteger(num) || num <= 0)
-        throw new ValidationError(
-            'Invalid card id.',
-            field,
-            ERROR_CODES.INVALID,
-        );
+    assertValidId(id, 'cardId');
 }
 
 export function assertValidCardFront(front: unknown): asserts front is string {

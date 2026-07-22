@@ -1,5 +1,4 @@
 import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
-import ms from 'ms';
 import { randomUUID } from 'crypto';
 import {
     JWT_ACCESS_SECRET,

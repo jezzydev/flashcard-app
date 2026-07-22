@@ -1,5 +1,4 @@
 import { ValidationError, ERROR_CODES } from './errors.js';
-import { CreateUser } from '../types/index.js';
 
 export function assertValidUserEmail(email: unknown): asserts email is string {
     const field = 'email';

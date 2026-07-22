@@ -58,7 +58,7 @@ router.delete(
         );
 
         if (result === 0) {
-            throw new NotFoundError('Crad not found.');
+            throw new NotFoundError('Card not found.');
         }
 
         res.json({ mesage: 'Card deleted.' });

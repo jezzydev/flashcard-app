@@ -75,6 +75,7 @@ export interface StudySession {
     cardsReviewed: number;
     cardsCorrect: number;
 }
+export type StudySessionBasicInfo = Pick<StudySession, 'id' | 'startedAt'>;
 
 export interface StudyDate {
     studyDate: Date;
