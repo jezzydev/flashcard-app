@@ -1,12 +1,10 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import errorHandler from './middleware/errorHandler.js';
-import { error } from 'console';
 import logger from './middleware/logger.js';
 import { testConnection } from './db/pool.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-
 import { authenticateToken } from './middleware/authentication.js';
 import authRoutes from './routes/auth.js';
 import deckRoutes from './routes/decks.js';
@@ -41,8 +39,8 @@ app.use('/api/cards', authenticateToken, cardRoutes);
 app.use('/api/study', authenticateToken, studyRoutes);
 
 // Catch-all for unknown API routes
-app.use('/api', (req, res, next) => {
-    res.status(400).json({ message: 'Route not found.' });
+app.use('/api', (req: Request, res: Response, next: NextFunction) => {
+    res.status(404).json({ message: 'Route not found.' });
 });
 
 // Serve frontend static files
@@ -50,7 +48,7 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../dist/client')));
 
     // Catch-all - send index.html for any non-API route
-    app.get('/{*path}', (req, res) => {
+    app.get('/{*path}', (req: Request, res: Response) => {
         res.sendFile(path.join(__dirname, '../dist/client/index.html'));
     });
 }
