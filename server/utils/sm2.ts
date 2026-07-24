@@ -42,7 +42,7 @@ export const calculateNextReview = (
     );
 
     const date = new Date();
-    date.setDate(date.getDate() + card.interval);
+    date.setDate(date.getDate() + nextReview.interval);
     nextReview.dueDate = date;
 
     return nextReview;

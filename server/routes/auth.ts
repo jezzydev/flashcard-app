@@ -227,10 +227,10 @@ router.post(
 router.post(
     '/logout',
     async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const refreshToken = req.cookies?.refreshToken;
+        const refreshToken = req.cookies?.refreshToken;
 
-            if (refreshToken) {
+        if (refreshToken) {
+            try {
                 const decoded = await jwt.verify(
                     refreshToken,
                     JWT_REFRESH_SECRET,
@@ -238,15 +238,26 @@ router.post(
 
                 assertJwtPayload(decoded);
                 const decodedRefreshToken = toRefreshTokenPayload(decoded);
-                await revokeAllUserTokens(Number(decodedRefreshToken.sub));
+
+                try {
+                    await revokeAllUserTokens(Number(decodedRefreshToken.sub));
+                } catch (revokeError) {
+                    // Genuine infra failure — token NOT revoked server-side.
+                    // Log loud, but don't block the client's logout.
+                    console.error(
+                        'Failed to revoke tokens on logout:',
+                        revokeError,
+                    );
+                }
+            } catch (error) {
+                // Expired/invalid/malformed token — expected, not exceptional.
+                // Nothing to revoke, nothing to log as an error.
             }
-            res.clearCookie('refreshToken', clearCookieSettings);
-            res.sendStatus(204);
-        } catch (error) {
-            //always clear cookie
-            res.clearCookie('refreshToken', clearCookieSettings);
-            next(error);
         }
+
+        //always clear cookie
+        res.clearCookie('refreshToken', clearCookieSettings);
+        res.sendStatus(204);
     },
 );
 
@@ -307,7 +318,10 @@ async function createNewRefreshToken(
                 [new Date(), userId, oldRefreshTokenHash],
             );
 
-            if (revokeOldTokenResult.rowCount === 0) {
+            if (
+                !revokeOldTokenResult.rowCount ||
+                revokeOldTokenResult.rowCount == 0
+            ) {
                 throw new Error('Failed to revoke old refresh token.');
             }
         }

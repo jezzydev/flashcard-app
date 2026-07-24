@@ -63,7 +63,7 @@ router.delete(
             throw new NotFoundError('Card not found.');
         }
 
-        res.json({ mesage: 'Card deleted.' });
+        res.json({ message: 'Card deleted.' });
     },
 );
 

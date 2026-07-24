@@ -7,8 +7,10 @@
         "node": ">=20.11.0"
     },
     "scripts": {
-        "test": "vitest run",
+        "test": "tsc -p tsconfig.test.json && vitest run",
         "test:watch": "vitest",
+        "test:server": "vitest run tests/server",
+        "test:client": "vitest run tests/unit",
         "test:coverage": "vitest run --coverage",
         "dev:server": "nodemon",
         "dev:client": "vite",

@@ -100,9 +100,9 @@ Linting & Formatter:     ESLint + Prettier + HTMLHint + Stylelint
 
 ```json
 {
-  "status": "error",
-  "code": "RESOURCE_NOT_FOUND",
-  "message": "User not found"
+    "status": "error",
+    "code": "RESOURCE_NOT_FOUND",
+    "message": "User not found"
 }
 ```
 
@@ -146,8 +146,12 @@ Linting & Formatter:     ESLint + Prettier + HTMLHint + Stylelint
 - Unit tests for all service and utility functions
 - Integration tests for all API endpoints using a test database
 - Never mock the database in integration tests — use a real test DB with fixtures
+- Do not weaken TypeScript guarantees just to make the test pass
 - Test file mirrors source file: `src/services/user.service.js` → `tests/unit/user.service.test.js`
 - Tests must be independent — no shared state between tests, each test sets up and tears down its own data
+- After writing or modifying any test, run `npm test` and paste the actual terminal output
+- Never mark a task complete without a passing test run shown
+- Do not delete or skip a failing test to make the suite pass — fix the code or flag the failure
 - Never commit a failing test
 - Coverage target: 80% minimum on services and repositories
 
