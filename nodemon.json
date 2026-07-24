@@ -1,6 +1,6 @@
 {
     "watch": ["server"],
-    "ext": "ts,json",
+    "ext": "ts,tsx,json",
     "ignore": ["server/**/*.spec.ts"],
-    "exec": "tsx ./server/index.ts"
+    "exec": "node --env-file=.env --import tsx ./server/index.ts"
 }

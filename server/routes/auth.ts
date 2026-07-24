@@ -124,7 +124,7 @@ router.post(
         }
 
         //revoke all tokens before generating new one
-        //Tradeoff: this kils all sessions on all devices on every login.
+        //Tradeoff: this kills all sessions on all devices on every login.
         //In the future, if adding multi-devire support, must switch to token family model or per-device revocation.
         await revokeAllUserTokens(user.id);
 
@@ -141,7 +141,7 @@ router.post(
         //generate access token
         const newAccessToken = generateAccessToken({
             ...payload,
-            token_version: newTokenVersion,
+            tokenVersion: newTokenVersion,
         });
 
         //send refreshToken via cookie, and acessToken via response
@@ -149,7 +149,7 @@ router.post(
 
         return res.json({
             message: 'Login successful.',
-            access_token: newAccessToken,
+            accessToken: newAccessToken,
         });
     },
 );
@@ -210,7 +210,7 @@ router.post(
         //generate access token
         const newAccessToken = generateAccessToken({
             ...payload,
-            token_version: newTokenVersion,
+            tokenVersion: newTokenVersion,
         });
 
         //send refreshToken via cookie, and acessToken via response
@@ -218,7 +218,7 @@ router.post(
 
         return res.json({
             message: 'New accesss token generated.',
-            access_token: newAccessToken,
+            accessToken: newAccessToken,
         });
     },
 );

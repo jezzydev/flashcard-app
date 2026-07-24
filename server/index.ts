@@ -32,6 +32,12 @@ app.use(
     }),
 );
 
+//initialize req.validated once, globally before any routers
+app.use((req: Request, res: Response, next: NextFunction) => {
+    req.validated = {};
+    next();
+});
+
 //API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/decks', authenticateToken, deckRoutes);

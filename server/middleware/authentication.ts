@@ -8,19 +8,10 @@ import { query } from '../db/query.js';
 import { Request, Response, NextFunction } from 'express';
 import { JWT_ACCESS_SECRET } from '../config/env.js';
 import {
-    AuthenticatedRequest,
     UserTokenVersion,
     AuthPayload,
     RefreshTokenPayload,
 } from '../types/index.js';
-
-declare global {
-    namespace Express {
-        interface Request {
-            user?: JwtPayload;
-        }
-    }
-}
 
 export const authenticateToken = async (
     req: Request,
@@ -57,7 +48,7 @@ export const authenticateToken = async (
 
         //verify token version
         const result = await query<UserTokenVersion>(
-            'SELECT id, email, token_version as tokenVersion FROM users WHERE id = $1;',
+            'SELECT id, email, token_version as "tokenVersion" FROM users WHERE id = $1;',
             [authPayload.sub],
         );
 
@@ -84,7 +75,7 @@ export const softAuthenticate = async (
             const decoded = await jwt.verify(token, JWT_ACCESS_SECRET);
 
             if (typeof decoded === 'object' && decoded !== null) {
-                req.user = decoded as JwtPayload;
+                req.user = decoded as AuthPayload;
             }
         }
     } catch (error) {
@@ -92,14 +83,6 @@ export const softAuthenticate = async (
     }
     next(); //always continue
 };
-
-export function assertAuthenticated(
-    req: Request,
-): asserts req is AuthenticatedRequest {
-    if (!req.user) {
-        throw new AuthorizationError('Unauthorized access.');
-    }
-}
 
 export function isJwtPayload(
     payload: JwtPayload | string,

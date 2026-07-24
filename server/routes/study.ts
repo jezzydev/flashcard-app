@@ -1,39 +1,46 @@
-import express, { Request, Response, NextFunction } from 'express';
-import { assertValidDeckId } from '../utils/deckValidation.js';
+import express, { Request, Response } from 'express';
 import { assertValidCardId } from '../utils/cardValidation.js';
 import { NotFoundError } from '../utils/errors.js';
 import { calculateNextReview } from '../utils/sm2.js';
-import { assertAuthenticated } from '../middleware/authentication.js';
 import {
-    assertValidStudySessionId,
     assertValidCardRating,
+    assertValidCreateSessionReview,
+    assertValidCreateStudySession,
 } from '../utils/studyValidation.js';
 import {
     StudySession,
-    SessionReview,
     Card,
     StudySessionBasicInfo,
+    CreateSessionReview,
+    CreateStudySession,
+    DeckBasicInfo,
 } from '../types/index.js';
 import { query, withTransaction, execute } from '../db/query.js';
+import { validateBody, validateIdParam } from '../middleware/validation.js';
+import {
+    getValidatedBody,
+    getValidatedId,
+    getAuthPayload,
+} from '../utils/validationHelper.js';
 
 const router = express.Router();
 
 //Submit a card review, update card schedule
 router.post(
-    '/sessions/:id/review',
-    async (req: Request, res: Response, next: NextFunction) => {
-        assertAuthenticated(req);
+    '/sessions/:sessionId/review',
+    validateIdParam('sessionId'),
+    validateBody(assertValidCreateSessionReview),
+    async (req: Request, res: Response) => {
+        const user = getAuthPayload(req);
+        const sessionId = getValidatedId(req, 'sessionId');
+        const review = getValidatedBody<CreateSessionReview>(req);
 
-        const sessionId = req.params.id;
-        const review: SessionReview = req.body;
-
-        assertValidStudySessionId(sessionId);
         assertValidCardId(review.cardId);
         assertValidCardRating(review.rating);
 
-        const sessionResult = await query<Pick<StudySession, 'id'>>(
-            `SELECT id FROM study_sessions WHERE id = $1 AND user_id = $2`,
-            [sessionId, req.user.sub],
+        const sessionResult = await query<Pick<StudySession, 'id' | 'deckId'>>(
+            `SELECT id, deck_id as "deckId" FROM study_sessions WHERE id = $1 AND user_id = $2 AND completed_at IS NULL;`,
+            [sessionId, user.sub],
         );
 
         if (!sessionResult[0]) {
@@ -41,9 +48,9 @@ router.post(
         }
 
         const cardResult = await query<Card>(
-            `SELECT id, deck_id as "deckId", front, back, interval, ease_facter as "easeFactor", repetitions, due_date as "dueDate", created_at as "createdAt" 
-                FROM cards WHERE id = $1;`,
-            [review.cardId],
+            `SELECT id, deck_id as "deckId", front, back, interval, ease_factor as "easeFactor", repetitions, due_date as "dueDate", created_at as "createdAt" 
+                FROM cards WHERE id = $1 AND deck_id = $2;`,
+            [review.cardId, sessionResult[0].deckId],
         );
 
         if (!cardResult[0]) {
@@ -91,18 +98,24 @@ router.post(
 //Start a new study session
 router.post(
     '/sessions',
-    async (req: Request, res: Response, next: NextFunction) => {
-        assertAuthenticated(req);
+    validateBody(assertValidCreateStudySession),
+    async (req: Request, res: Response) => {
+        const user = getAuthPayload(req);
+        const studySession = getValidatedBody<CreateStudySession>(req);
 
-        const userId = req.user.sub;
-        const studySession = req.body;
+        const deckResult = await query<DeckBasicInfo>(
+            `SELECT id, name, description FROM decks WHERE id = $1 AND user_id = $2;`,
+            [studySession.deckId, user.sub],
+        );
 
-        assertValidDeckId(studySession.deck_id);
+        if (!deckResult[0]) {
+            throw new NotFoundError('Deck not found.');
+        }
 
         const result = await query<StudySessionBasicInfo>(
             `INSERT INTO study_sessions (user_id, deck_id) VALUES ($1, $2) 
             RETURNING id, started_at as "startedAt";`,
-            [userId, studySession.deck_id],
+            [user.sub, studySession.deckId],
         );
 
         res.status(201).json({
@@ -114,15 +127,15 @@ router.post(
 
 //Mark session as complete
 router.put(
-    '/sessions/:id/complete',
-    async (req: Request, res: Response, next: NextFunction) => {
-        assertAuthenticated(req);
-        const sessionId = req.params.id;
-        assertValidStudySessionId(sessionId);
+    '/sessions/:sessionId/complete',
+    validateIdParam('sessionId'),
+    async (req: Request, res: Response) => {
+        const user = getAuthPayload(req);
+        const sessionId = getValidatedId(req, 'sessionId');
 
-        const sessionResult = await query<Pick<StudySession, 'id'>>(
-            'SELECT id FROM study_sessions WHERE id = $1 AND user_id = $2',
-            [sessionId, req.user.sub],
+        const sessionResult = await query<Pick<StudySession, 'id' | 'deckId'>>(
+            `SELECT id, deck_id as "deckId" FROM study_sessions WHERE id = $1 AND user_id = $2 AND completed_at IS NULL;`,
+            [sessionId, user.sub],
         );
 
         if (!sessionResult[0]) {

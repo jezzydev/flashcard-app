@@ -45,13 +45,14 @@ export function assertValidDeckDescription(
         );
 }
 
-export function assertValidCreateDeck(deck: CreateDeck): void {
+export function assertValidCreateDeck(deck: any): asserts deck is CreateDeck {
     assertValidDeckName(deck.name);
+
     if (deck.description !== undefined)
         assertValidDeckDescription(deck.description);
 }
 
-export function assertValidUpdateDeck(deck: UpdateDeck): void {
+export function assertValidUpdateDeck(deck: any): asserts deck is UpdateDeck {
     if (deck.name !== undefined) assertValidDeckName(deck.name);
     if (deck.description !== undefined)
         assertValidDeckDescription(deck.description);

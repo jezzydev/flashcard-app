@@ -104,10 +104,10 @@ The FM visual design (colors, typography, card aesthetics, layout structure) is 
 
 - Fields: name, email, password.
 - Client-side validation before submit:
-  - All fields required.
-  - Email must be a valid email format.
-  - Password minimum 8 characters.
-  - Show validation errors inline per field.
+    - All fields required.
+    - Email must be a valid email format.
+    - Password minimum 8 characters.
+    - Show validation errors inline per field.
 - `POST /api/auth/register` on submit.
 - On success: redirect to `index.html?registered=1`. Login page reads this param and shows a one-time success message.
 - On failure: display server error inline.
@@ -142,8 +142,8 @@ The FM visual design (colors, typography, card aesthetics, layout structure) is 
 
 **Deck options (three-dot menu per deck card):**
 
-- Edit → modal with pre-filled name/description, `PUT /api/decks/:id`.
-- Delete → confirmation dialog, `DELETE /api/decks/:id`. On confirm: remove deck card from DOM.
+- Edit → modal with pre-filled name/description, `PUT /api/decks/:deckId`.
+- Delete → confirmation dialog, `DELETE /api/decks/:deckId`. On confirm: remove deck card from DOM.
 
 **Logout:**
 
@@ -180,21 +180,21 @@ The FM visual design (colors, typography, card aesthetics, layout structure) is 
 
 - Fields: front (textarea), back (textarea). No category field.
 - Both fields required.
-- `POST /api/decks/:id/cards` on submit.
+- `POST /api/decks/:deckId/cards` on submit.
 - On success: append new card to the list, clear form fields.
 - On failure: show inline error.
 
 **Card list:**
 
-- Fetch all cards via `GET /api/decks/:id/cards`.
+- Fetch all cards via `GET /api/decks/:deckId/cards`.
 - Each card shows:
-  - Front text (truncated if long).
-  - Back text (truncated if long).
-  - SM-2 metadata chips: "Due today" badge if `due_date <= NOW()`, otherwise "Due in N days".
-  - Ease factor as a small progress bar.
-  - Interval (e.g., "6 days") and repetition count.
-- Edit card: modal with pre-filled front/back, `PUT /api/cards/:id`.
-- Delete card: confirmation dialog, `DELETE /api/cards/:id`. On confirm: remove from DOM.
+    - Front text (truncated if long).
+    - Back text (truncated if long).
+    - SM-2 metadata chips: "Due today" badge if `due_date <= NOW()`, otherwise "Due in N days".
+    - Ease factor as a small progress bar.
+    - Interval (e.g., "6 days") and repetition count.
+- Edit card: modal with pre-filled front/back, `PUT /api/cards/:cardId`.
+- Delete card: confirmation dialog, `DELETE /api/cards/:cardId`. On confirm: remove from DOM.
 - Empty state: if no cards, prompt to add the first one.
 
 ---
@@ -205,12 +205,12 @@ The FM visual design (colors, typography, card aesthetics, layout structure) is 
 
 **Session lifecycle:**
 
-1. On page load: fetch due cards via `GET /api/decks/:id/study` (max 20).
+1. On page load: fetch due cards via `GET /api/decks/:deckId/study` (max 20).
 2. If no due cards: show "Nothing to study" message with a link back to the deck. Do not create a session.
 3. If due cards exist: `POST /api/study/sessions` to create a session (`status = 'in_progress'`). Store `sessionId`.
 4. Present cards one at a time in the order returned by the API.
-5. After each rating: `POST /api/study/sessions/:id/review` with `{ card_id, rating }`. Backend runs SM-2 update.
-6. After the last card is rated: `PUT /api/study/sessions/:id/complete`. Show session summary panel.
+5. After each rating: `POST /api/study/sessions/:sessionId/review` with `{ card_id, rating }`. Backend runs SM-2 update.
+6. After the last card is rated: `PUT /api/study/sessions/:sessionId/complete`. Show session summary panel.
 
 **Card display:**
 
@@ -261,30 +261,30 @@ The FM visual design (colors, typography, card aesthetics, layout structure) is 
 
 ## SM-2 Algorithm
 
-Runs on the backend in `server/utils/sm2.js`. Called on every `POST /api/study/sessions/:id/review`.
+Runs on the backend in `server/utils/sm2.js`. Called on every `POST /api/study/sessions/:sessionId/review`.
 
 ```js
 function calculateNextReview(card, rating) {
-  // rating: 0=blackout, 1=incorrect, 2=incorrect but familiar,
-  //         3=correct with difficulty, 4=correct, 5=perfect recall
+    // rating: 0=blackout, 1=incorrect, 2=incorrect but familiar,
+    //         3=correct with difficulty, 4=correct, 5=perfect recall
 
-  if (rating < 3) {
-    card.interval = 1;
-    card.repetitions = 0;
-  } else {
-    if (card.repetitions === 0) card.interval = 1;
-    else if (card.repetitions === 1) card.interval = 6;
-    else card.interval = Math.round(card.interval * card.easeFactor);
-    card.repetitions += 1;
-  }
+    if (rating < 3) {
+        card.interval = 1;
+        card.repetitions = 0;
+    } else {
+        if (card.repetitions === 0) card.interval = 1;
+        else if (card.repetitions === 1) card.interval = 6;
+        else card.interval = Math.round(card.interval * card.easeFactor);
+        card.repetitions += 1;
+    }
 
-  card.easeFactor = Math.max(
-    1.3,
-    card.easeFactor + 0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02),
-  );
+    card.easeFactor = Math.max(
+        1.3,
+        card.easeFactor + 0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02),
+    );
 
-  card.dueDate = addDays(new Date(), card.interval);
-  return card;
+    card.dueDate = addDays(new Date(), card.interval);
+    return card;
 }
 ```
 
@@ -344,26 +344,26 @@ CREATE TABLE session_reviews (
 
 ## API Endpoints
 
-| Method | Endpoint                           | Description                                     | Auth |
-| ------ | ---------------------------------- | ----------------------------------------------- | ---- |
-| POST   | `/api/auth/register`               | Register new user                               | —    |
-| POST   | `/api/auth/login`                  | Login, return access token + set refresh cookie | —    |
-| POST   | `/api/auth/refresh`                | Refresh access token via HttpOnly cookie        | —    |
-| POST   | `/api/auth/logout`                 | Logout, clear refresh cookie                    | ✓    |
-| GET    | `/api/decks`                       | All decks for authenticated user                | ✓    |
-| POST   | `/api/decks`                       | Create a deck                                   | ✓    |
-| GET    | `/api/decks/:id`                   | Single deck with card count and due count       | ✓    |
-| PUT    | `/api/decks/:id`                   | Update deck name or description                 | ✓    |
-| DELETE | `/api/decks/:id`                   | Delete deck and all cards                       | ✓    |
-| GET    | `/api/decks/:id/cards`             | All cards in a deck                             | ✓    |
-| POST   | `/api/decks/:id/cards`             | Add a card                                      | ✓    |
-| PUT    | `/api/cards/:id`                   | Edit card front or back                         | ✓    |
-| DELETE | `/api/cards/:id`                   | Delete a card                                   | ✓    |
-| GET    | `/api/decks/:id/study`             | Due cards for a session (max 20)                | ✓    |
-| POST   | `/api/study/sessions`              | Start a study session                           | ✓    |
-| POST   | `/api/study/sessions/:id/review`   | Submit card rating, run SM-2 update             | ✓    |
-| PUT    | `/api/study/sessions/:id/complete` | Mark session complete                           | ✓    |
-| GET    | `/api/decks/:id/stats`             | Deck stats: total, due, retention rate, streak  | ✓    |
+| Method | Endpoint                                  | Description                                     | Auth |
+| ------ | ----------------------------------------- | ----------------------------------------------- | ---- |
+| POST   | `/api/auth/register`                      | Register new user                               | —    |
+| POST   | `/api/auth/login`                         | Login, return access token + set refresh cookie | —    |
+| POST   | `/api/auth/refresh`                       | Refresh access token via HttpOnly cookie        | —    |
+| POST   | `/api/auth/logout`                        | Logout, clear refresh cookie                    | ✓    |
+| GET    | `/api/decks`                              | All decks for authenticated user                | ✓    |
+| POST   | `/api/decks`                              | Create a deck                                   | ✓    |
+| GET    | `/api/decks/:deckId`                      | Single deck with card count and due count       | ✓    |
+| PUT    | `/api/decks/:deckId`                      | Update deck name or description                 | ✓    |
+| DELETE | `/api/decks/:deckId`                      | Delete deck and all cards                       | ✓    |
+| GET    | `/api/decks/:deckId/cards`                | All cards in a deck                             | ✓    |
+| POST   | `/api/decks/:deckId/cards`                | Add a card                                      | ✓    |
+| PUT    | `/api/cards/:cardId`                      | Edit card front or back                         | ✓    |
+| DELETE | `/api/cards/:cardId`                      | Delete a card                                   | ✓    |
+| GET    | `/api/decks/:deckId/study`                | Due cards for a session (max 20)                | ✓    |
+| POST   | `/api/study/sessions`                     | Start a study session                           | ✓    |
+| POST   | `/api/study/sessions/:sessionId/review`   | Submit card rating, run SM-2 update             | ✓    |
+| PUT    | `/api/study/sessions/:sessionId/complete` | Mark session complete                           | ✓    |
+| GET    | `/api/decks/:deckId/stats`                | Deck stats: total, due, retention rate, streak  | ✓    |
 
 ---
 

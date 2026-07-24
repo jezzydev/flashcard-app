@@ -195,26 +195,26 @@ NODE_ENV=development
 
 ## API Summary
 
-| Method | Endpoint                           | Description                                     | Auth |
-| ------ | ---------------------------------- | ----------------------------------------------- | ---- |
-| POST   | `/api/auth/register`               | Register new user                               | —    |
-| POST   | `/api/auth/login`                  | Login, return access token + set refresh cookie | —    |
-| POST   | `/api/auth/refresh`                | Refresh access token via HttpOnly cookie        | —    |
-| POST   | `/api/auth/logout`                 | Logout, clear refresh cookie                    | ✓    |
-| GET    | `/api/decks`                       | All decks for authenticated user                | ✓    |
-| POST   | `/api/decks`                       | Create a deck                                   | ✓    |
-| GET    | `/api/decks/:id`                   | Single deck with card count and due count       | ✓    |
-| PUT    | `/api/decks/:id`                   | Update deck name or description                 | ✓    |
-| DELETE | `/api/decks/:id`                   | Delete deck and all cards                       | ✓    |
-| GET    | `/api/decks/:id/cards`             | All cards in a deck                             | ✓    |
-| POST   | `/api/decks/:id/cards`             | Add a card                                      | ✓    |
-| PUT    | `/api/cards/:id`                   | Edit card front or back                         | ✓    |
-| DELETE | `/api/cards/:id`                   | Delete a card                                   | ✓    |
-| GET    | `/api/decks/:id/study`             | Due cards for a session (max 20)                | ✓    |
-| POST   | `/api/study/sessions`              | Start a study session                           | ✓    |
-| POST   | `/api/study/sessions/:id/review`   | Submit card rating, run SM-2 update             | ✓    |
-| PUT    | `/api/study/sessions/:id/complete` | Mark session complete                           | ✓    |
-| GET    | `/api/decks/:id/stats`             | Deck stats: total, due, retention rate, streak  | ✓    |
+| Method | Endpoint                                  | Description                                     | Auth |
+| ------ | ----------------------------------------- | ----------------------------------------------- | ---- |
+| POST   | `/api/auth/register`                      | Register new user                               | —    |
+| POST   | `/api/auth/login`                         | Login, return access token + set refresh cookie | —    |
+| POST   | `/api/auth/refresh`                       | Refresh access token via HttpOnly cookie        | —    |
+| POST   | `/api/auth/logout`                        | Logout, clear refresh cookie                    | ✓    |
+| GET    | `/api/decks`                              | All decks for authenticated user                | ✓    |
+| POST   | `/api/decks`                              | Create a deck                                   | ✓    |
+| GET    | `/api/decks/:deckId`                      | Single deck with card count and due count       | ✓    |
+| PUT    | `/api/decks/:deckId`                      | Update deck name or description                 | ✓    |
+| DELETE | `/api/decks/:deckId`                      | Delete deck and all cards                       | ✓    |
+| GET    | `/api/decks/:deckId/cards`                | All cards in a deck                             | ✓    |
+| POST   | `/api/decks/:deckId/cards`                | Add a card                                      | ✓    |
+| PUT    | `/api/cards/:cardId`                      | Edit card front or back                         | ✓    |
+| DELETE | `/api/cards/:cardId`                      | Delete a card                                   | ✓    |
+| GET    | `/api/decks/:deckId/study`                | Due cards for a session (max 20)                | ✓    |
+| POST   | `/api/study/sessions`                     | Start a study session                           | ✓    |
+| POST   | `/api/study/sessions/:sessionId/review`   | Submit card rating, run SM-2 update             | ✓    |
+| PUT    | `/api/study/sessions/:sessionId/complete` | Mark session complete                           | ✓    |
+| GET    | `/api/decks/:deckId/stats`                | Deck stats: total, due, retention rate, streak  | ✓    |
 
 ---
 

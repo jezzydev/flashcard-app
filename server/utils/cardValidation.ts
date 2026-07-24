@@ -42,12 +42,12 @@ export function assertValidCardBack(back: unknown): asserts back is string {
         );
 }
 
-export function assertValidCreateCard(card: CreateCard): void {
+export function assertValidCreateCard(card: any): asserts card is CreateCard {
     assertValidCardFront(card.front);
     assertValidCardBack(card.back);
 }
 
-export function assertValidUpdateCard(card: UpdateCard): void {
+export function assertValidUpdateCard(card: any): asserts card is UpdateCard {
     if (card.front !== undefined) assertValidCardFront(card.front);
     if (card.back !== undefined) assertValidCardBack(card.back);
 }

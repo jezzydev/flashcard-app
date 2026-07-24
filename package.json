@@ -10,7 +10,7 @@
         "test": "vitest run",
         "test:watch": "vitest",
         "test:coverage": "vitest run --coverage",
-        "dev:server": "nodemon --env-file=.env",
+        "dev:server": "nodemon",
         "dev:client": "vite",
         "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
         "build:client": "vite build",

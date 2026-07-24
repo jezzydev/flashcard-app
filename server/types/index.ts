@@ -1,9 +1,6 @@
 import { Jwt, JwtPayload } from 'jsonwebtoken';
-import { Request } from 'express';
 
-export interface AuthenticatedRequest extends Request {
-    user: AuthPayload;
-}
+type Stringify<T, K extends keyof T> = Omit<T, K> & { [P in K]: string };
 
 // ---- User ----
 export interface User {
@@ -19,10 +16,15 @@ export type LoginUser = Pick<User, 'email'> & { password: string };
 export type UserTokenVersion = Pick<User, 'id' | 'email' | 'tokenVersion'>;
 export type UserBasicInfo = Pick<User, 'id' | 'email' | 'name'>;
 export interface UserStats {
+    userId: number;
     totalDecks: number;
     dueToday: number;
     streak: number;
 }
+export type RawUserStats = Stringify<
+    Omit<UserStats, 'streak'>,
+    'totalDecks' | 'dueToday'
+>;
 
 // ---- Deck ----
 export interface Deck {
@@ -40,6 +42,8 @@ export type DeckSummary = Pick<
     Deck,
     'id' | 'name' | 'description' | 'createdAt'
 > & { totalCards: number; dueToday: number };
+export type RawDeckSummary = Stringify<DeckSummary, 'totalCards' | 'dueToday'>;
+
 export type DeckBasicInfo = Pick<Deck, 'id' | 'name' | 'description'>;
 
 export interface DeckStats {
@@ -48,6 +52,10 @@ export interface DeckStats {
     retentionRate: number;
     streak: number;
 }
+export type RawDeckStats = Stringify<
+    Omit<DeckStats, 'streak'>,
+    'totalCards' | 'dueToday' | 'retentionRate'
+>;
 
 // ---- Card ----
 export interface Card {
@@ -75,19 +83,23 @@ export interface StudySession {
     cardsReviewed: number;
     cardsCorrect: number;
 }
+export type CreateStudySession = Pick<StudySession, 'deckId'>;
+
 export type StudySessionBasicInfo = Pick<StudySession, 'id' | 'startedAt'>;
 
 export interface StudyDate {
     studyDate: Date;
 }
 
+export type CardRating = 0 | 1 | 2 | 3 | 4 | 5;
 export interface SessionReview {
     id: number;
     sessionId: number;
     cardId: number;
-    rating: 0 | 1 | 2 | 3 | 4 | 5;
+    rating: CardRating;
     reviewedAt: Date;
 }
+export type CreateSessionReview = Pick<SessionReview, 'cardId' | 'rating'>;
 
 // ---- Auth ----
 export interface RefreshToken {
@@ -106,6 +118,16 @@ declare module 'jsonwebtoken' {
         tokenVersion?: number;
     }
 }
+
+declare module 'express-serve-static-core' {
+    interface Request {
+        user?: AuthPayload;
+    }
+}
+
+// export interface AuthenticatedRequest extends Request {
+//     user: AuthPayload;
+// }
 
 export type AuthPayload = Required<
     Pick<JwtPayload, 'sub' | 'email' | 'name' | 'tokenVersion'>
